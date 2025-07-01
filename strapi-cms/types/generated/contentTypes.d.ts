@@ -107,43 +107,6 @@ export interface AdminApiTokenPermission extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface AdminAuditLog extends Struct.CollectionTypeSchema {
-  collectionName: 'strapi_audit_logs';
-  info: {
-    displayName: 'Audit Log';
-    pluralName: 'audit-logs';
-    singularName: 'audit-log';
-  };
-  options: {
-    draftAndPublish: false;
-    timestamps: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    action: Schema.Attribute.String & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    date: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'admin::audit-log'> &
-      Schema.Attribute.Private;
-    payload: Schema.Attribute.JSON;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
-  };
-}
-
 export interface AdminPermission extends Struct.CollectionTypeSchema {
   collectionName: 'admin_permissions';
   info: {
@@ -439,6 +402,42 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAnhBatDongSanAnhBatDongSan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'anh_bat_dong_sans';
+  info: {
+    displayName: 'anhBatDongSan';
+    pluralName: 'anh-bat-dong-sans';
+    singularName: 'anh-bat-dong-san';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bat_dong_san: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::bat-dong-san.bat-dong-san'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    duongDanAnh: Schema.Attribute.String;
+    laAnhChinh: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::anh-bat-dong-san.anh-bat-dong-san'
+    > &
+      Schema.Attribute.Private;
+    moTaAnh: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    thuTuHienThi: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
@@ -522,24 +521,108 @@ export interface ApiBaiDangBaiDang extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    anhDaiDien: Schema.Attribute.String;
+    bat_dong_san: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::bat-dong-san.bat-dong-san'
+    >;
     congKhai: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    danh_muc_bai_viet: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::danh-muc-bai-viet.danh-muc-bai-viet'
+    >;
     keywork: Schema.Attribute.String;
+    khach_hang: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::khach-hang.khach-hang'
+    >;
+    laNoiBat: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::bai-dang.bai-dang'
     > &
       Schema.Attribute.Private;
-    moTa: Schema.Attribute.Blocks;
+    moTaNgan: Schema.Attribute.Blocks;
+    ngayPublic: Schema.Attribute.DateTime;
+    noiDung: Schema.Attribute.Blocks;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.String;
+    slug: Schema.Attribute.String & Schema.Attribute.Unique;
+    soLuotXem: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     tieuDe: Schema.Attribute.String;
+    trangThai: Schema.Attribute.Enumeration<
+      ['Nh\u00E1p', 'Xu\u1EA5t B\u1EA3n', 'L\u01B0u tr\u1EEF']
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBatDongSanBatDongSan extends Struct.CollectionTypeSchema {
+  collectionName: 'bat_dong_sans';
+  info: {
+    displayName: 'batDongSan';
+    pluralName: 'bat-dong-sans';
+    singularName: 'bat-dong-san';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    anh_bat_dong_sans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::anh-bat-dong-san.anh-bat-dong-san'
+    >;
+    bai_dangs: Schema.Attribute.Relation<'oneToMany', 'api::bai-dang.bai-dang'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    danhSachAnh: Schema.Attribute.JSON;
+    diaChi: Schema.Attribute.String;
+    dienTich: Schema.Attribute.Decimal;
+    donViGia: Schema.Attribute.String;
+    giaBan: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: '0';
+        },
+        string
+      >;
+    khach_hang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::khach-hang.khach-hang'
+    >;
+    kinhDo: Schema.Attribute.Decimal;
+    laNoiBat: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    loaiBatDongSan: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::bat-dong-san.bat-dong-san'
+    > &
+      Schema.Attribute.Private;
+    moTaChiTiet: Schema.Attribute.Blocks;
+    ngayHetHan: Schema.Attribute.DateTime;
+    ngayPublic: Schema.Attribute.DateTime;
+    phuongXa: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.String;
+    soLuotXem: Schema.Attribute.Integer;
+    tieuDe: Schema.Attribute.String;
+    tinh: Schema.Attribute.String;
+    trangThaiGiaoDich: Schema.Attribute.String;
+    trangThaiXuatBan: Schema.Attribute.Enumeration<
+      ['Nh\u00E1p', 'C\u00F4ng khai', 'L\u01B0u Tr\u1EEF']
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    viDo: Schema.Attribute.Decimal;
   };
 }
 
@@ -569,6 +652,39 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDanhMucBaiVietDanhMucBaiViet
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'danh_muc_bai_viets';
+  info: {
+    displayName: 'danhMucBaiViet';
+    pluralName: 'danh-muc-bai-viets';
+    singularName: 'danh-muc-bai-viet';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bai_dangs: Schema.Attribute.Relation<'oneToMany', 'api::bai-dang.bai-dang'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    laTrangThai: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::danh-muc-bai-viet.danh-muc-bai-viet'
+    > &
+      Schema.Attribute.Private;
+    moTa: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.String;
+    tenDanhMuc: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -607,6 +723,43 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiGoiDichVuGoiDichVu extends Struct.CollectionTypeSchema {
+  collectionName: 'goi_dich_vus';
+  info: {
+    displayName: 'goiDichVu';
+    pluralName: 'goi-dich-vus';
+    singularName: 'goi-dich-vu';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    giaGoi: Schema.Attribute.Decimal;
+    khach_hang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::khach-hang.khach-hang'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::goi-dich-vu.goi-dich-vu'
+    > &
+      Schema.Attribute.Private;
+    moTa: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    soLuongBdsPublicToiDa: Schema.Attribute.Integer;
+    tenGoi: Schema.Attribute.String;
+    thoiHanGoi: Schema.Attribute.String;
+    trangThaiHoatDong: Schema.Attribute.Boolean;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiKhachHangKhachHang extends Struct.CollectionTypeSchema {
   collectionName: 'khach_hangs';
   info: {
@@ -618,20 +771,19 @@ export interface ApiKhachHangKhachHang extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    bai_dangs: Schema.Attribute.Relation<'oneToMany', 'api::bai-dang.bai-dang'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    email: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-        minLength: 1;
-      }>;
+    goi_dich_vu: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::goi-dich-vu.goi-dich-vu'
+    >;
     ho: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
-        minLength: 1;
+        minLength: 2;
       }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -639,6 +791,8 @@ export interface ApiKhachHangKhachHang extends Struct.CollectionTypeSchema {
       'api::khach-hang.khach-hang'
     > &
       Schema.Attribute.Private;
+    ngayBatDauGoi: Schema.Attribute.DateTime;
+    ngayKetThucGoi: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     ten: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -649,6 +803,10 @@ export interface ApiKhachHangKhachHang extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1107,7 +1265,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1121,6 +1278,10 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    khach_hang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::khach-hang.khach-hang'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1156,18 +1317,21 @@ declare module '@strapi/strapi' {
     export interface ContentTypeSchemas {
       'admin::api-token': AdminApiToken;
       'admin::api-token-permission': AdminApiTokenPermission;
-      'admin::audit-log': AdminAuditLog;
       'admin::permission': AdminPermission;
       'admin::role': AdminRole;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
+      'api::anh-bat-dong-san.anh-bat-dong-san': ApiAnhBatDongSanAnhBatDongSan;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::bai-dang.bai-dang': ApiBaiDangBaiDang;
+      'api::bat-dong-san.bat-dong-san': ApiBatDongSanBatDongSan;
       'api::category.category': ApiCategoryCategory;
+      'api::danh-muc-bai-viet.danh-muc-bai-viet': ApiDanhMucBaiVietDanhMucBaiViet;
       'api::global.global': ApiGlobalGlobal;
+      'api::goi-dich-vu.goi-dich-vu': ApiGoiDichVuGoiDichVu;
       'api::khach-hang.khach-hang': ApiKhachHangKhachHang;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

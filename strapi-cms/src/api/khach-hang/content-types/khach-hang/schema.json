@@ -11,24 +11,41 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "email": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100,
-      "required": true,
-      "unique": true,
-      "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-    },
     "ho": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 100
+      "minLength": 2,
+      "maxLength": 100,
+      "required": true
     },
     "ten": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100,
       "required": true
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "khach_hang"
+    },
+    "bai_dangs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::bai-dang.bai-dang",
+      "mappedBy": "khach_hang"
+    },
+    "goi_dich_vu": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::goi-dich-vu.goi-dich-vu",
+      "mappedBy": "khach_hang"
+    },
+    "ngayBatDauGoi": {
+      "type": "datetime"
+    },
+    "ngayKetThucGoi": {
+      "type": "datetime"
     }
   }
 }
