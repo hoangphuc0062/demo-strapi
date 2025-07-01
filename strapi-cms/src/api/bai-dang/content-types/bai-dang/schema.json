@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bai_dangs",
+  "info": {
+    "singularName": "bai-dang",
+    "pluralName": "bai-dangs",
+    "displayName": "baiDang"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tieuDe": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "moTa": {
+      "type": "blocks"
+    },
+    "congKhai": {
+      "type": "boolean"
+    }
+  }
+}
