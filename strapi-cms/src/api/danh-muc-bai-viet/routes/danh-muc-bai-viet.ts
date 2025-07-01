@@ -4,4 +4,4 @@
 
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreRouter('api::danh-muc-bai-viet.danh-muc-bai-viet');
+export default factories.createCoreRouter('api::danh-muc-bai-viet.danh-muc-bai-viet' as any);

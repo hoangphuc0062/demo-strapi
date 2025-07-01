@@ -4,4 +4,4 @@
 
 import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::goi-dich-vu.goi-dich-vu');
+export default factories.createCoreController('api::goi-dich-vu.goi-dich-vu' as any);
