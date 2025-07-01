@@ -21,7 +21,11 @@
       "type": "blocks"
     },
     "congKhai": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
+    },
+    "keywork": {
+      "type": "string"
     }
   }
 }
