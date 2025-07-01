@@ -12,28 +12,86 @@
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-8" icon="video_call" v-if="$q.screen.gt.sm">
-            <q-tooltip>Create a video or post</q-tooltip>
-          </q-btn>
-          <q-btn round dense flat color="grey-8" icon="apps" v-if="$q.screen.gt.sm">
-            <q-tooltip>Apps</q-tooltip>
-          </q-btn>
-          <q-btn round dense flat color="grey-8" icon="message" v-if="$q.screen.gt.sm">
-            <q-tooltip>Messages</q-tooltip>
-          </q-btn>
-          <q-btn round dense flat color="grey-8" icon="notifications">
-            <q-badge color="red" text-color="white" floating> 2 </q-badge>
-            <q-tooltip>Notifications</q-tooltip>
-          </q-btn>
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <q-tooltip>Account</q-tooltip>
-          </q-btn>
+          <!-- Auth buttons for non-authenticated users -->
+          <template v-if="!authStore.isAuthenticated">
+            <q-btn round flat @click="$router.push('/auth/login')">
+              <q-icon name="login" />
+              <q-tooltip>Đăng nhập</q-tooltip>
+            </q-btn>
+            <q-btn round flat @click="$router.push('/auth/register')">
+              <q-icon name="person_add" />
+              <q-tooltip>Đăng ký</q-tooltip>
+            </q-btn>
+          </template>
+
+          <!-- User menu for authenticated users -->
+          <template v-else>
+            <q-btn round flat>
+              <q-avatar size="26px">
+                <img :src="userAvatar" />
+              </q-avatar>
+
+              <!-- Dropdown Menu -->
+              <q-menu
+                anchor="bottom right"
+                self="top right"
+                class="q-mt-xs"
+                :offset="[0, 8]"
+              >
+                <q-list class="q-py-sm" style="min-width: 200px">
+                  <!-- User Info -->
+                  <q-item class="q-px-md q-py-sm">
+                    <q-item-section avatar>
+                      <q-avatar size="40px">
+                        <img :src="userAvatar" />
+                      </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label class="text-weight-medium">{{ authStore.userDisplayName }}</q-item-label>
+                      <q-item-label caption class="text-grey-6">{{ authStore.user?.email }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator class="q-my-sm" />
+
+                  <!-- Menu Items -->
+                  <q-item clickable v-close-popup @click="goToProfile">
+                    <q-item-section avatar>
+                      <q-icon name="person" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>Hồ sơ của tôi</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="goToSettings">
+                    <q-item-section avatar>
+                      <q-icon name="settings" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>Cài đặt</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator class="q-my-sm" />
+
+                  <!-- Logout -->
+                  <q-item clickable v-close-popup @click="logout" class="text-negative">
+                    <q-item-section avatar>
+                      <q-icon name="logout" color="negative" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>Đăng xuất</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </template>
+
           <q-btn round flat @click="toggleDarkMode">
             <q-icon :name="isDarkMode ? 'dark_mode' : 'light_mode'" />
-            <q-tooltip>{{ isDarkMode ? 'Light mode' : 'Dark mode' }}</q-tooltip>
+            <q-tooltip>{{ isDarkMode ? 'Chế độ sáng' : 'Chế độ tối' }}</q-tooltip>
           </q-btn>
         </div>
       </q-toolbar>
@@ -88,11 +146,15 @@
 import { ref, computed } from 'vue';
 import { fabYoutube } from '@quasar/extras/fontawesome-v6';
 import { useQuasar } from 'quasar';
+import { useAuthStore } from 'src/stores/Auth';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'MyLayout',
   setup() {
     const $q = useQuasar();
+    const router = useRouter();
+    const authStore = useAuthStore();
     const leftDrawerOpen = ref(false);
     const search = ref('');
     const expandedItems = ref<string[]>([]);
@@ -121,8 +183,46 @@ export default {
       }
     }
 
+    // User avatar - use default if no avatar in user data
+    const userAvatar = computed(() => {
+      return authStore.user?.avatar || 'https://cdn.quasar.dev/img/boy-avatar.png';
+    });
+
+    // Menu functions
+    function goToProfile() {
+      console.log('Đi tới trang hồ sơ');
+      // Add routing logic here
+      // router.push('/profile');
+    }
+
+    function goToSettings() {
+      console.log('Đi tới trang cài đặt');
+      // Add routing logic here
+      // router.push('/settings');
+    }
+
+    function logout() {
+      $q.dialog({
+        title: 'Xác nhận đăng xuất',
+        message: 'Bạn có chắc chắn muốn đăng xuất?',
+        cancel: {
+          label: 'Hủy',
+          color: 'grey'
+        },
+        ok: {
+          label: 'Đăng xuất',
+          color: 'negative'
+        },
+        persistent: true
+      }).onOk(() => {
+        authStore.logout();
+        void router.push('/auth/login');
+      });
+    }
+
     return {
       fabYoutube,
+      authStore,
       leftDrawerOpen,
       search,
       toggleLeftDrawer,
@@ -130,20 +230,35 @@ export default {
       toggleChildren,
       toggleDarkMode,
       isDarkMode,
+      userAvatar,
+      goToProfile,
+      goToSettings,
+      logout,
       menu: [
-        { icon: 'home', color: 'primary', text: 'Home', link: '/' },
-        { icon: 'whatshot', color: 'primary', text: 'Trending', link: '/trending' },
-        { icon: 'subscriptions', color: 'primary', text: 'Subscriptions', link: '/subscriptions' },
+        { icon: 'home', color: 'primary', text: 'Trang chủ', link: '/' },
         {
-          icon: 'explore',
-          color: 'primary',
-          text: 'Explore',
+          icon: 'person', color: 'primary', text: 'Người dùng',
           children: [
-            { icon: 'music_note', color: 'primary', text: 'Music', link: '/music' },
-            { icon: 'sports_esports', color: 'primary', text: 'Gaming', link: '/gaming' },
-            { icon: 'newspaper', color: 'primary', text: 'News', link: '/news' },
-            { icon: 'school', color: 'primary', text: 'Learning', link: '/learning' },
-            { icon: 'sports_soccer', color: 'primary', text: 'Sports', link: '/sports' },
+            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/user/list' },
+            { icon: 'add', color: 'primary', text: 'Thêm', link: '/user/create' },
+          ],
+        },
+        {
+          icon: 'article',
+          color: 'primary',
+          text: 'Bài viết',
+          children: [
+            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/article/list' },
+            { icon: 'add', color: 'primary', text: 'Thêm', link: '/article/create' },
+          ],
+        },
+        {
+          icon: 'category',
+          color: 'primary',
+          text: 'Danh mục',
+          children: [
+            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/category/list' },
+            { icon: 'add', color: 'primary', text: 'Thêm', link: '/category/create' },
           ],
         },
       ],
