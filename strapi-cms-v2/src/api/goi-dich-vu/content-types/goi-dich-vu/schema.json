@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "goi_dich_vus",
+  "info": {
+    "singularName": "goi-dich-vu",
+    "pluralName": "goi-dich-vus",
+    "displayName": "goiDichVu"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tenGoi": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "required": true
+    },
+    "soLuongPublic": {
+      "type": "integer",
+      "required": true,
+      "default": 5
+    },
+    "soLuongDaft": {
+      "type": "integer",
+      "default": -1
+    },
+    "gia": {
+      "type": "biginteger"
+    },
+    "thoiHanNgay": {
+      "type": "integer"
+    },
+    "trangThai": {
+      "type": "boolean"
+    }
+  }
+}

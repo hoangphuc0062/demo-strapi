@@ -10,7 +10,6 @@ export default () => ({
         apolloServer: {
           tracing: false,
           introspection: true,
-          // Không cần playground ở đây nữa vì đã có landingPage
         },
       },
     },
