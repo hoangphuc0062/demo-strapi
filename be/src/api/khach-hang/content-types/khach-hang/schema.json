@@ -18,7 +18,7 @@
       "unique": true
     },
     "matKhau": {
-      "type": "password",
+      "type": "string",
       "required": true,
       "minLength": 6,
       "maxLength": 200
