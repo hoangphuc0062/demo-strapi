@@ -150,6 +150,7 @@ import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from 'src/stores/Auth'
+import { useMeta } from 'quasar'
 
 export default {
   setup() {
@@ -165,6 +166,11 @@ export default {
     const showConfirmPassword = ref(false)
     const agreeTerms = ref(false)
     const loading = ref(false)
+
+    useMeta({
+      title: 'Register',
+      titleTemplate: title => `${title} - My Website`,
+    })
 
     const register = async () => {
       if (!agreeTerms.value) {

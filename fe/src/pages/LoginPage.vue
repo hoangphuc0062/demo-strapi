@@ -107,6 +107,7 @@ import { ref } from 'vue'
 import { useAuthStore } from 'src/stores/Auth'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useMeta } from 'quasar'
 
 export default {
   setup() {
@@ -118,6 +119,10 @@ export default {
     const rememberMe = ref(false)
     const loading = ref(false)
     const authStore = useAuthStore()
+    useMeta({
+      title: 'Login',
+      titleTemplate: title => `${title} - My Website`,
+    })
 
     const login = async () => {
       loading.value = true
