@@ -1,42 +1,45 @@
 const LOGIN_MUTATION = `
-  mutation Login($input: UsersPermissionsLoginInput!) {
-    login(input: $input) {
-      jwt
-      user {
-        id
-        username
-        email
-      }
+mutation LoginKhachHang($input: LoginKhachHangInput!) {
+  loginKhachHang(input: $input) {
+     jwt
+    user {
+      ho
+      ten
+      email
+      soDienThoai
+      laXacThuc
+      laCam
     }
   }
+}
 `
 
 const REGISTER_MUTATION = `
-  mutation Register($input: UsersPermissionsRegisterInput!) {
-    register(input: $input) {
-      jwt
-      user {
-        id
-        username
-        email
-      }
+mutation RegisterKhachHang($input: RegisterKhachHangInput!) {
+  registerKhachHang(input: $input) {
+    jwt
+    user {
+      ho
+      ten
+      email
+      soDienThoai
+      laXacThuc
+      laCam
     }
   }
+}
 `
 
 const ME_QUERY = `
- query Me {
-  me {
+query MeKhachHang {
+  meKhachHang {
     id
-    documentId
-    username
     email
-    confirmed
-    blocked
-    role {
-    id
-    name
-    }
+    ho
+    ten
+    soDienThoai
+    laXacThuc
+    laCam
   }
 }
 `

@@ -14,7 +14,19 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="register" class="q-gutter-md">
             <q-input
-              v-model="username"
+              v-model="ho"
+              label="Họ"
+              outlined
+              dense
+              lazy-rules
+              class="q-mb-md"
+            >
+              <template v-slot:prepend>
+                <q-icon name="person" color="primary" />
+              </template>
+            </q-input>
+            <q-input
+              v-model="ten"
               label="Tên người dùng"
               outlined
               dense
@@ -158,7 +170,8 @@ export default {
     const router = useRouter()
     const authStore = useAuthStore()
 
-    const username = ref('')
+    const ho = ref('')
+    const ten = ref('')
     const email = ref('')
     const password = ref('')
     const confirmPassword = ref('')
@@ -194,9 +207,11 @@ export default {
       loading.value = true
       try {
         const success = await authStore.register({
-          username: username.value,
+          ho: ho.value,
+          ten: ten.value,
           email: email.value,
-          password: password.value
+          matKhau: password.value,
+          soDienThoai: '',
         })
 
         if (success) {
@@ -219,7 +234,8 @@ export default {
     }
 
     return {
-      username,
+      ho,
+      ten,
       email,
       password,
       confirmPassword,
