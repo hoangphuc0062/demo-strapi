@@ -49,6 +49,12 @@
                     <q-item-section>
                       <q-item-label class="text-weight-medium">{{ authStore.userDisplayName }}</q-item-label>
                       <q-item-label caption class="text-grey-6">{{ authStore.user?.email }}</q-item-label>
+                      <q-item-label caption class="text-grey-6">
+                        <q-chip>
+                          <q-avatar icon="bookmark" color="red" text-color="white" />
+                          {{ goiDichVuByNguoiDung?.khachHang?.goi_dich_vu?.tenGoi }}
+                        </q-chip>
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
 
@@ -143,11 +149,12 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { fabYoutube } from '@quasar/extras/fontawesome-v6';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/Auth';
 import { useRouter } from 'vue-router';
+import { useGoiDichVuStore } from 'src/stores/GoiDichVu';
 
 export default {
   name: 'MyLayout',
@@ -158,6 +165,7 @@ export default {
     const leftDrawerOpen = ref(false);
     const search = ref('');
     const expandedItems = ref<string[]>([]);
+    const goiDichVuStore = useGoiDichVuStore();
 
     // Initialize dark mode from localStorage
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -219,6 +227,17 @@ export default {
         void router.push('/auth/login');
       });
     }
+    const goiDichVuByNguoiDung = computed(() => {
+
+      return goiDichVuStore.goiDichVuByNguoiDung;
+    });
+
+
+    onMounted(() => {
+      if (authStore.user?.id) {
+        void goiDichVuStore.fetchGoiDichVusByNguoiDung(authStore.user.id);
+      }
+    });
 
     return {
       fabYoutube,
@@ -234,6 +253,8 @@ export default {
       goToProfile,
       goToSettings,
       logout,
+      goiDichVuStore,
+      goiDichVuByNguoiDung,
       menu: [
         { icon: 'home', color: 'primary', text: 'Trang chủ', link: '/' },
         {

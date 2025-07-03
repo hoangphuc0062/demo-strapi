@@ -198,19 +198,28 @@ const getButtonLabel = (index: number): string => {
   return 'Upgrade'
 }
 
-const selectPlan = (plan: GoiDichVu) => {
-  console.log('Selected plan:', plan)
-
-  if (plan.gia === null || plan.gia === 0) {
+const selectPlan = async (plan: GoiDichVu) => {
+  const documentIdUser = localStorage.getItem('user')
+  const user = JSON.parse(documentIdUser || '{}')
+  if (!user.id) {
     Notify.create({
-      type: 'info',
-      message: `You selected the free plan: ${plan.tenGoi}`,
+      type: 'negative',
+      message: 'Không tìm thấy documentId của người dùng',
       position: 'top'
     })
-  } else {
+    return
+  }
+  const result = await goiDichVuStore.updateGoiDichVu({
+    documentId: user.id,
+    data: {
+      goi_dich_vu: plan.documentId
+    }
+   })
+  if (result === true) {
+    await goiDichVuStore.fetchGoiDichVusByNguoiDung(user.id)
     Notify.create({
       type: 'positive',
-      message: `You selected: ${plan.tenGoi} - ${formatCurrency(plan.gia)}`,
+      message: 'Cập nhật gói dịch vụ thành công',
       position: 'top'
     })
   }
