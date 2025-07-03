@@ -70,7 +70,7 @@ export default {
               },
               // Completely custom resolver without any Strapi wrapper
               resolve: async (parent, args, context, info) => {
-                console.log('🚀 Raw registerKhachHang resolver called');
+                // console.log('🚀 Raw registerKhachHang resolver called');
 
                 try {
                   const { email, matKhau, ho, ten, soDienThoai } = args.input;
@@ -89,7 +89,7 @@ export default {
                     soDienThoai
                   });
 
-                  console.log('✅ Registration successful for:', email);
+                  // console.log('✅ Registration successful for:', email);
 
                   // Return with custom structure
                   return {
@@ -118,7 +118,7 @@ export default {
                 input: nexus.nonNull('LoginKhachHangInput'),
               },
               resolve: async (parent, args, context, info) => {
-                console.log('🚀 Raw loginKhachHang resolver called');
+                // console.log('🚀 Raw loginKhachHang resolver called');
 
                 try {
                   const { email, matKhau } = args.input;
@@ -160,7 +160,7 @@ export default {
             t.field('meKhachHang', {
               type: 'AuthKhachHang',
               resolve: async (parent, args, context, info) => {
-                console.log('🚀 Raw meKhachHang resolver called');
+                
 
                 try {
                   // Get token from context
@@ -172,7 +172,7 @@ export default {
 
                   const profile = await strapi.service('api::khach-hang.khach-hang').getProfile(token);
 
-                  console.log('✅ Profile retrieved for user ID:', profile.id);
+                  // console.log('✅ Profile retrieved for user ID:', profile.id);
 
                   return {
                     id: profile.id,

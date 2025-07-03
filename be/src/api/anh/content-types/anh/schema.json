@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "anhs",
+  "info": {
+    "singularName": "anh",
+    "pluralName": "anhs",
+    "displayName": "anh"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "bat_dong_sans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::bat-dong-san.bat-dong-san",
+      "mappedBy": "anh"
+    },
+    "duongDanAnh": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "moTa": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "thuTuHienThi": {
+      "type": "integer"
+    },
+    "laAnhChinh": {
+      "type": "boolean"
+    }
+  }
+}
