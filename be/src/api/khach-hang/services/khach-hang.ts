@@ -156,12 +156,23 @@ export default factories.createCoreService('api::khach-hang.khach-hang' as any, 
         const decoded = await this.verifyToken(token) as any;
 
         const khachHang = await strapi.entityService.findOne('api::khach-hang.khach-hang' as any, decoded.id);
+        console.log('🔍 Khách hàng:', khachHang);
 
         if (!khachHang) {
             throw new Error('Khách hàng không tồn tại');
         }
-
-        const { matKhau, ...khachHangData } = khachHang as any;
-        return khachHangData;
+        const data = {
+            id: khachHang.documentId,
+            ho: khachHang.ho,
+            ten: khachHang.ten,
+            email: khachHang.email,
+            soDienThoai: khachHang.soDienThoai,
+            laXacThuc: khachHang.laXacThuc,
+            laCam: khachHang.laCam,
+            createdAt: khachHang.createdAt,
+            updatedAt: khachHang.updatedAt,
+            publishedAt: khachHang.publishedAt,
+        }
+        return data;
     },
 }));
