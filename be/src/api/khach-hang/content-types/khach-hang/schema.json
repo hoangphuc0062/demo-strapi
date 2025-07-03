@@ -19,9 +19,9 @@
     },
     "matKhau": {
       "type": "string",
-      "required": true,
       "minLength": 6,
-      "maxLength": 200
+      "maxLength": 200,
+      "required": true
     },
     "ho": {
       "type": "string",
@@ -50,6 +50,11 @@
     "laCam": {
       "type": "boolean",
       "default": false
+    },
+    "goi_dich_vu": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::goi-dich-vu.goi-dich-vu"
     }
   }
 }
