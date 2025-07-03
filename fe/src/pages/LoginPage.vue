@@ -128,8 +128,8 @@ export default {
       loading.value = true
       try {
         const success = await authStore.login({
-          identifier: email.value,
-          password: password.value
+          email: email.value,
+          matKhau: password.value
         })
 
         if (success) {

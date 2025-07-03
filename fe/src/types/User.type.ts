@@ -1,22 +1,23 @@
 interface User {
   id: string
-  username: string
+  ho: string
+  ten: string
   email: string
   avatar?: string
-  role?: {
-    name: string
-  }
+  soDienThoai: string
 }
 
 interface LoginCredentials {
-  identifier: string // email or username
-  password: string
+  email: string // email or username
+  matKhau: string
 }
 
 interface RegisterData {
-  username: string
   email: string
-  password: string
+  ho: string
+  matKhau: string
+  soDienThoai: string
+  ten : string
 }
 
 interface AuthResponse {

@@ -27,7 +27,7 @@
       "default": -1
     },
     "gia": {
-      "type": "biginteger"
+      "type": "decimal"
     },
     "thoiHanNgay": {
       "type": "integer"

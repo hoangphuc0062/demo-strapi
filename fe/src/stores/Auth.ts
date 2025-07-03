@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value && !!user.value)
   const userDisplayName = computed(() => {
     if (!user.value) return ''
-    return user.value.username
+    return user.value.ho + ' ' + user.value.ten
   })
 
 
@@ -46,11 +46,11 @@ export const useAuthStore = defineStore('auth', () => {
         }
       })
 
-      if (!result?.data?.login) {
+      if (!result?.data?.loginKhachHang) {
         throw new Error('Login failed')
       }
 
-      setAuthData(result.data.login)
+      setAuthData(result.data.loginKhachHang)
 
       Notify.create({
         type: 'positive',
@@ -84,11 +84,11 @@ export const useAuthStore = defineStore('auth', () => {
         }
       })
 
-      if (!result?.data?.register) {
+      if (!result?.data?.registerKhachHang) {
         throw new Error('Registration failed')
       }
 
-      setAuthData(result.data.register)
+      setAuthData(result.data.registerKhachHang)
 
       Notify.create({
         type: 'positive',
@@ -131,13 +131,13 @@ export const useAuthStore = defineStore('auth', () => {
         query: gql(ME_QUERY)
       })
 
-      if (!result?.data?.me) {
+      if (!result?.data?.meKhachHang) {
         clearAuthData()
         return false
       }
 
-      user.value = result.data.me
-      localStorage.setItem('user', JSON.stringify(result.data.me))
+      user.value = result.data.meKhachHang
+      localStorage.setItem('user', JSON.stringify(result.data.meKhachHang))
 
       return true
     } catch (error) {

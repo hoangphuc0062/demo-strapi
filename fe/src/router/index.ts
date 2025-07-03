@@ -41,6 +41,10 @@ export default defineRouter(function (/* { store, ssrContext } */) {
       next('/');
       return;
     }
+    if (!authStore.isAuthenticated && !to.path.startsWith('/auth')) {
+      next('/auth/login');
+      return;
+    }
 
     // Allow navigation to continue
     next();
