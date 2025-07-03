@@ -93,6 +93,10 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::danh-muc-bat-dong-san.danh-muc-bat-dong-san"
+    },
+    "trangThaiHoatDong": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
