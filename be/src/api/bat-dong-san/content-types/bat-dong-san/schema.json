@@ -97,6 +97,12 @@
     "trangThaiHoatDong": {
       "type": "boolean",
       "default": false
+    },
+    "bai_viet": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::bai-dang.bai-dang",
+      "inversedBy": "bat_dong_sans"
     }
   }
 }
