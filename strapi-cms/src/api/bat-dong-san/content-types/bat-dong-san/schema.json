@@ -1,0 +1,97 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bat_dong_sans",
+  "info": {
+    "singularName": "bat-dong-san",
+    "pluralName": "bat-dong-sans",
+    "displayName": "batDongSan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "khach_hang": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::khach-hang.khach-hang"
+    },
+    "tieuDe": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "moTaChiTiet": {
+      "type": "blocks"
+    },
+    "loaiBatDongSan": {
+      "type": "string"
+    },
+    "giaBan": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
+    "donViGia": {
+      "type": "string"
+    },
+    "dienTich": {
+      "type": "decimal"
+    },
+    "diaChi": {
+      "type": "string"
+    },
+    "phuongXa": {
+      "type": "string"
+    },
+    "tinh": {
+      "type": "string"
+    },
+    "kinhDo": {
+      "type": "decimal"
+    },
+    "viDo": {
+      "type": "decimal"
+    },
+    "trangThaiGiaoDich": {
+      "type": "string"
+    },
+    "trangThaiXuatBan": {
+      "type": "enumeration",
+      "enum": [
+        "Nháp",
+        "Công khai",
+        "Lưu Trữ"
+      ]
+    },
+    "danhSachAnh": {
+      "type": "json"
+    },
+    "laNoiBat": {
+      "type": "boolean",
+      "default": false
+    },
+    "soLuotXem": {
+      "type": "integer"
+    },
+    "ngayPublic": {
+      "type": "datetime"
+    },
+    "ngayHetHan": {
+      "type": "datetime"
+    },
+    "anh_bat_dong_sans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::anh-bat-dong-san.anh-bat-dong-san",
+      "mappedBy": "bat_dong_san"
+    },
+    "bai_dangs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::bai-dang.bai-dang",
+      "mappedBy": "bat_dong_san"
+    }
+  }
+}

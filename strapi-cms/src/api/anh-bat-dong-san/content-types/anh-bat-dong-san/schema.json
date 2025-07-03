@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "anh_bat_dong_sans",
+  "info": {
+    "singularName": "anh-bat-dong-san",
+    "pluralName": "anh-bat-dong-sans",
+    "displayName": "anhBatDongSan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "bat_dong_san": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::bat-dong-san.bat-dong-san",
+      "inversedBy": "anh_bat_dong_sans"
+    },
+    "duongDanAnh": {
+      "type": "string"
+    },
+    "moTaAnh": {
+      "type": "string"
+    },
+    "thuTuHienThi": {
+      "type": "string"
+    },
+    "laAnhChinh": {
+      "type": "string"
+    }
+  }
+}

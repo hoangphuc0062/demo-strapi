@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "khach_hangs",
+  "info": {
+    "singularName": "khach-hang",
+    "pluralName": "khach-hangs",
+    "displayName": "khachHang"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "minLength": 2,
+      "maxLength": 100,
+      "unique": true
+    },
+    "matKhau": {
+      "type": "string",
+      "required": true,
+      "minLength": 6,
+      "maxLength": 200
+    },
+    "ho": {
+      "type": "string",
+      "required": true
+    },
+    "ten": {
+      "type": "string",
+      "required": true
+    },
+    "soDienThoai": {
+      "type": "string"
+    },
+    "avatar": {
+      "type": "string"
+    },
+    "resetPasswordToken": {
+      "type": "string"
+    },
+    "confirmationToken": {
+      "type": "string"
+    },
+    "laXacThuc": {
+      "type": "boolean",
+      "default": false
+    },
+    "laCam": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
