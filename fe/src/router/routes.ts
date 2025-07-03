@@ -6,6 +6,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: 'category/list', component: () => import('pages/category/ListPage.vue') },
+      { path: 'goi-dich-vu/list', component: () => import('pages/GoiDichVu/ListPage.vue') },
     ],
   },
   {
