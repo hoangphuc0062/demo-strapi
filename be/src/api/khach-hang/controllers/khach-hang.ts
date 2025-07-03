@@ -4,7 +4,7 @@
 
 import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::khach-hang.khach-hang', ({ strapi }) => ({
+export default factories.createCoreController('api::khach-hang.khach-hang' as any, ({ strapi }) => ({
     // Custom login endpoint
     async login(ctx) {
         try {

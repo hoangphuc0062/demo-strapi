@@ -6,11 +6,11 @@ import { factories } from '@strapi/strapi';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export default factories.createCoreService('api::khach-hang.khach-hang', ({ strapi }) => ({
+export default factories.createCoreService('api::khach-hang.khach-hang' as any, ({ strapi }) => ({
     // Tìm khách hàng theo email
     async findByEmail(email: string) {
-        return await strapi.entityService.findMany('api::khach-hang.khach-hang', {
-            filters: { email },
+        return await strapi.entityService.findMany('api::khach-hang.khach-hang' as any, {
+            filters: { email } as any,
             limit: 1,
         });
     },
@@ -44,7 +44,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
                 email: khachHang.email,
                 type: 'khach-hang'
             },
-            secret,
+            secret as any,
             { expiresIn: '7d' }
         );
     },
@@ -61,7 +61,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
         const hashedPassword = await this.hashPassword(data.matKhau);
 
         // Tạo khách hàng mới
-        const khachHang = await strapi.entityService.create('api::khach-hang.khach-hang', {
+        const khachHang = await strapi.entityService.create('api::khach-hang.khach-hang' as any, {
             data: {
                 ...data,
                 matKhau: hashedPassword,
@@ -72,7 +72,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
         });
 
         // Tạo token
-        const token = this.generateJWT(khachHang);
+        const token = this.generateJWT(khachHang as any);
 
         return { khachHang, token };
     },
@@ -81,7 +81,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
     async login(email: string, password: string) {
         console.log('🔍 Login attempt for:', email);
 
-        const khachHangs = await this.findByEmail(email);
+        const khachHangs = await this.findByEmail(email as any);
 
         if (!khachHangs || khachHangs.length === 0) {
             throw new Error('Email không tồn tại');
@@ -109,7 +109,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
         if (isPasswordHashed) {
             // Password is hashed, use bcrypt compare
             console.log('🔍 Comparing hashed password with bcrypt');
-            isValidPassword = await this.validatePassword(password, khachHang.matKhau);
+            isValidPassword = await this.validatePassword(password as any, khachHang.matKhau);
         } else {
             // Password is plain text (old data), compare directly and then update
             console.log('🔍 Found plain text password, comparing directly');
@@ -118,8 +118,8 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
             // If valid, hash the password and update in DB
             if (isValidPassword) {
                 console.log('🔄 Updating plain text password to hashed password');
-                const hashedPassword = await this.hashPassword(password);
-                await strapi.entityService.update('api::khach-hang.khach-hang', khachHang.id, {
+                const hashedPassword = await this.hashPassword(password as any);
+                await strapi.entityService.update('api::khach-hang.khach-hang' as any, khachHang.id, {
                     data: { matKhau: hashedPassword }
                 });
             }
@@ -132,10 +132,10 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
         }
 
         // Tạo token
-        const token = this.generateJWT(khachHang);
+        const token = this.generateJWT(khachHang as any);
 
         // Remove password from response
-        const { matKhau, ...khachHangData } = khachHang;
+        const { matKhau, ...khachHangData } = khachHang as any;
 
         return { khachHang: khachHangData, token };
     },
@@ -144,7 +144,7 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
     async verifyToken(token: string) {
         try {
             const secret = this.getJWTSecret();
-            const decoded = jwt.verify(token, secret);
+            const decoded = jwt.verify(token, secret as any);
             return decoded;
         } catch (error) {
             throw new Error('Token không hợp lệ');
@@ -155,13 +155,13 @@ export default factories.createCoreService('api::khach-hang.khach-hang', ({ stra
     async getProfile(token: string) {
         const decoded = await this.verifyToken(token) as any;
 
-        const khachHang = await strapi.entityService.findOne('api::khach-hang.khach-hang', decoded.id);
+        const khachHang = await strapi.entityService.findOne('api::khach-hang.khach-hang' as any, decoded.id);
 
         if (!khachHang) {
             throw new Error('Khách hàng không tồn tại');
         }
 
-        const { matKhau, ...khachHangData } = khachHang;
+        const { matKhau, ...khachHangData } = khachHang as any;
         return khachHangData;
     },
 }));
