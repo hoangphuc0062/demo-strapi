@@ -3,13 +3,14 @@ import { ref } from 'vue'
 
 import { apolloClient } from 'src/boot/apollo'
 import gql from 'graphql-tag'
-import type { BatCategory, BatDongSan, BatDongSanInput } from 'src/types'
-import { CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BAT_DONG_SAN_QUERY } from 'src/service'
+import type { BatCategory, BatDongSan, BatDongSanInput, BlogBDS } from 'src/types'
+import { CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BAT_DONG_SAN_QUERY, GET_BLOG_QUERY } from 'src/service'
 
 export const useBatDongSanStore = defineStore('batDongSan', () => {
   const batDongSans = ref<BatDongSan[]>([])
   const loading = ref(false)
   const batCategories = ref<BatCategory[]>([])
+  const blogs = ref<BlogBDS[]>([])
 
   const fetchBatDongSans = async (pagination?: { page?: number; pageSize?: number }): Promise<boolean> => {
     loading.value = true
@@ -66,6 +67,23 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
     }
   }
 
+  const fetchBlogs = async (): Promise<boolean> => {
+    try {
+      const result = await apolloClient.query({
+        query: gql(GET_BLOG_QUERY),
+        fetchPolicy: 'no-cache'
+      })
+      if (!result?.data?.baiDangs) {
+        throw new Error('Failed to fetch blogs')
+      }
+      blogs.value = result.data.baiDangs
+      return true
+    } catch (error) {
+      console.error('Error fetching blogs:', error)
+      return false
+    }
+  }
+
   return {
 
       batDongSans,
@@ -73,7 +91,9 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
       fetchBatDongSans,
       createBatDongSan,
       fetchBatCategories,
-      batCategories
+      batCategories,
+      blogs,
+      fetchBlogs
     }
   }
 )

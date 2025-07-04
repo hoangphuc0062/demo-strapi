@@ -36,16 +36,6 @@
     "noiDung": {
       "type": "blocks"
     },
-    "anhDaiDien": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
     "trangThai": {
       "type": "boolean",
       "default": false
@@ -63,6 +53,9 @@
       "relation": "manyToOne",
       "target": "api::danh-muc-bai-viet.danh-muc-bai-viet",
       "inversedBy": "bai_viets"
+    },
+    "anhDaiDien": {
+      "type": "string"
     }
   }
 }

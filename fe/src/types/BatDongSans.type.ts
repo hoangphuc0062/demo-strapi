@@ -18,7 +18,6 @@ interface BatDongSan {
   ho: string
   ten: string
 }
-loaiBatDongSan: string
 anh: {
   thuTuHienThi: number
 }
@@ -65,12 +64,21 @@ interface BatDongSanInput {
   soLuotXem: number
   ngayPublic: string
   khach_hang: string
-  loaiBatDongSan: string
   anh: string
   laNoiBat: boolean
   danhSachAnh: string[]
   danh_muc_bat_dong_san: string
   trangThaiHoatDong: boolean
+  bai_viet: string[]
 }
 
-export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput }
+interface BlogBDS {
+  documentId: string
+  tieuDe: string
+}
+
+interface BlogListResponse {
+  baiDangs: BlogBDS[]
+}
+
+export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput, BlogBDS, BlogListResponse }
