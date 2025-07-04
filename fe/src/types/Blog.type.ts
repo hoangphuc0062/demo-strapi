@@ -51,4 +51,13 @@ interface DanhMucBaiVietResponses {
   danhMucBaiViets: DanhMucBaiViet[]
 }
 
-export type { Blog, BlogsListResponses, BlogInput, DanhMucBaiViet, DanhMucBaiVietResponses }
+interface DeleteBaiDangInput {
+  documentId: string
+}
+
+interface UpdateBaiDangInput {
+  documentId: string
+  data: BlogInput
+}
+
+export type { Blog, BlogsListResponses, BlogInput, DanhMucBaiViet, DanhMucBaiVietResponses, DeleteBaiDangInput, UpdateBaiDangInput }

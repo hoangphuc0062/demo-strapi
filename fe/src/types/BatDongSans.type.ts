@@ -80,4 +80,13 @@ interface BlogListResponse {
   baiDangs: BlogBDS[]
 }
 
-export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput, BlogBDS, BlogListResponse }
+interface DeleteBatDongSanInput {
+  documentId: string
+}
+
+interface UpdateBatDongSanInput {
+  documentId: string
+  data: BatDongSanInput
+}
+
+export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput, BlogBDS, BlogListResponse, DeleteBatDongSanInput, UpdateBatDongSanInput }
