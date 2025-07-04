@@ -20,7 +20,6 @@ query BatDongSans {
         ho
         ten
     }
-    loaiBatDongSan
     anh {
       thuTuHienThi
     }
@@ -58,7 +57,6 @@ mutation CreateBatDongSan($data: BatDongSanInput!) {
         ho
         ten
     }
-    loaiBatDongSan
     anh {
       thuTuHienThi
     }
@@ -81,4 +79,12 @@ query DanhMucBatDongSans {
 }
 `;
 
-export { GET_BAT_DONG_SAN_QUERY, CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY }
+const GET_BLOG_QUERY = `
+query BaiDangs {
+  baiDangs {
+    documentId
+    tieuDe
+  }
+}
+`;
+export { GET_BAT_DONG_SAN_QUERY, CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BLOG_QUERY }

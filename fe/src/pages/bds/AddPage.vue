@@ -149,6 +149,20 @@
                 type="date"
               />
 
+              <q-select
+                v-model="form.bai_viet"
+                label="Bài viết *"
+                :options="blogOptions"
+                emit-value
+                map-options
+                option-label="label"
+                option-value="value"
+                multiple
+                use-chips
+                required
+                :rules="[val => val && val.length > 0 || 'Vui lòng chọn ít nhất một bài viết']"
+              />
+
               <div class="row q-gutter-md">
                 <div class="col">
                   <q-toggle
@@ -187,7 +201,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useBatDongSanStore } from 'src/stores/BatDongSans'
-import type {  BatCategory, BatDongSanInput } from 'src/types'
+import type {  BatCategory, BatDongSanInput, BlogBDS } from 'src/types'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -213,7 +227,8 @@ const form = reactive({
   ngayPublic: "",
   danh_muc_bat_dong_san: '',
   laNoiBat: false,
-  trangThaiHoatDong: true
+  trangThaiHoatDong: true,
+  bai_viet: []
 })
 
 // Options for select fields
@@ -226,6 +241,7 @@ const donViGiaOptions = [
 
 const loaiBdsOptions = ref<{ label: string, value: string }[]>([])
 
+const blogOptions = ref<{ label: string, value: string }[]>([])
 
 const trangThaiOptions = [
   'Đang bán',
@@ -306,6 +322,11 @@ onMounted(async () => {
   loaiBdsOptions.value = batDongSanStore.batCategories.map((category: BatCategory) => ({
     label: category.tenDanhMuc,
     value: category.documentId
+  }))
+  await batDongSanStore.fetchBlogs()
+  blogOptions.value = batDongSanStore.blogs.map((blog: BlogBDS) => ({
+    label: blog.tieuDe,
+    value: blog.documentId
   }))
 })
 </script>

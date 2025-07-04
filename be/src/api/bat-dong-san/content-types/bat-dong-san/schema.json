@@ -68,14 +68,6 @@
       "relation": "oneToOne",
       "target": "api::khach-hang.khach-hang"
     },
-    "loaiBatDongSan": {
-      "type": "enumeration",
-      "enum": [
-        "Nhà",
-        "Đất",
-        "Chung cư"
-      ]
-    },
     "anh": {
       "type": "relation",
       "relation": "manyToOne",
