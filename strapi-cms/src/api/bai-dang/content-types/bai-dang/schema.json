@@ -22,7 +22,7 @@
       "type": "blocks"
     },
     "noiDung": {
-      "type": "blocks"
+      "type": "richtext"
     },
     "congKhai": {
       "type": "boolean",

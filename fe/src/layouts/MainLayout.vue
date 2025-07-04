@@ -256,14 +256,7 @@ export default {
       goiDichVuStore,
       goiDichVuByNguoiDung,
       menu: [
-        { icon: 'home', color: 'primary', text: 'Trang chủ', link: '/' },
-        {
-          icon: 'person', color: 'primary', text: 'Người dùng',
-          children: [
-            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/user/list' },
-            { icon: 'add', color: 'primary', text: 'Thêm', link: '/user/create' },
-          ],
-        },
+        { icon: 'dashboard', color: 'primary', text: 'Trang chủ', link: '/' },
         {
           icon: 'home',
           color: 'primary',

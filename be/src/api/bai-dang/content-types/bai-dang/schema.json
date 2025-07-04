@@ -34,7 +34,7 @@
       "type": "string"
     },
     "noiDung": {
-      "type": "blocks"
+      "type": "richtext"
     },
     "trangThai": {
       "type": "boolean",

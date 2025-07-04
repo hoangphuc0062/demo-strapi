@@ -585,7 +585,7 @@ export interface ApiBaiDangBaiDang extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     moTaNgan: Schema.Attribute.Blocks;
     ngayPublic: Schema.Attribute.DateTime;
-    noiDung: Schema.Attribute.Blocks;
+          noiDung: Schema.Attribute.RichText;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.String & Schema.Attribute.Unique;
     soLuotXem: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;

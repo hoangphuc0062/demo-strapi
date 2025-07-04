@@ -4,7 +4,7 @@ interface Blog {
   slug: string
   moTaNgan: string
   noiDung: string
-  trangThai: string
+  trangThai: boolean
   laNoiBat: boolean
   soLuotXem: number
   createdAt: string
@@ -24,8 +24,31 @@ interface Blog {
 }
 
 
-interface BlogListResponse {
+interface BlogsListResponses {
   baiDangs: Blog[]
 }
 
-export type { Blog, BlogListResponse }
+
+interface BlogInput {
+  khach_hang: string,
+  bat_dong_sans: string,
+  tieuDe: string,
+  slug: string,
+  moTaNgan: string,
+  noiDung: string,
+  trangThai: boolean,
+  laNoiBat: boolean,
+  soLuotXem: number,
+  danh_muc_bai_viet: string,
+  anhDaiDien: string,
+}
+
+interface DanhMucBaiViet {
+  documentId: string
+  tenDanhMuc: string
+}
+interface DanhMucBaiVietResponses {
+  danhMucBaiViets: DanhMucBaiViet[]
+}
+
+export type { Blog, BlogsListResponses, BlogInput, DanhMucBaiViet, DanhMucBaiVietResponses }
