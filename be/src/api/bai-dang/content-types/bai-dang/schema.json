@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bai_dangs",
+  "info": {
+    "singularName": "bai-dang",
+    "pluralName": "bai-dangs",
+    "displayName": "baiViet"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "khach_hang": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::khach-hang.khach-hang"
+    },
+    "bat_dong_sans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::bat-dong-san.bat-dong-san",
+      "mappedBy": "bai_viet"
+    },
+    "tieuDe": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "tieuDe"
+    },
+    "moTaNgan": {
+      "type": "string"
+    },
+    "noiDung": {
+      "type": "blocks"
+    },
+    "anhDaiDien": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "trangThai": {
+      "type": "boolean",
+      "default": false
+    },
+    "laNoiBat": {
+      "type": "boolean",
+      "default": false
+    },
+    "soLuotXem": {
+      "type": "biginteger",
+      "default": "0"
+    },
+    "danh_muc_bai_viet": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::danh-muc-bai-viet.danh-muc-bai-viet",
+      "inversedBy": "bai_viets"
+    }
+  }
+}
