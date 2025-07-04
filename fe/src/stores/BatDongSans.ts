@@ -3,8 +3,8 @@ import { ref } from 'vue'
 
 import { apolloClient } from 'src/boot/apollo'
 import gql from 'graphql-tag'
-import type { BatCategory, BatDongSan, BatDongSanInput, BlogBDS } from 'src/types'
-import { CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BAT_DONG_SAN_QUERY, GET_BLOG_QUERY } from 'src/service'
+import type { BatCategory, BatDongSan, BatDongSanInput, BlogBDS, DeleteBatDongSanInput, UpdateBatDongSanInput } from 'src/types'
+import { CREATE_BAT_DONG_SAN_MUTATION, DELETE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BAT_DONG_SAN_QUERY, GET_BLOG_QUERY, UPDATE_BAT_DONG_SAN_MUTATION } from 'src/service'
 
 export const useBatDongSanStore = defineStore('batDongSan', () => {
   const batDongSans = ref<BatDongSan[]>([])
@@ -84,6 +84,34 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
     }
   }
 
+  const deleteBatDongSan = async (data: DeleteBatDongSanInput): Promise<boolean> => {
+    try {
+      const result = await apolloClient.mutate({
+        mutation: gql(DELETE_BAT_DONG_SAN_MUTATION),
+        variables: { documentId: data.documentId }
+      })
+      await fetchBatDongSans()
+      return result.data.deleteBatDongSan
+    } catch (error) {
+      console.error('Error deleting bat dong san:', error)
+      return false
+    }
+  }
+
+  const updateBatDongSan = async (data: UpdateBatDongSanInput): Promise<boolean> => {
+    try {
+      const result = await apolloClient.mutate({
+        mutation: gql(UPDATE_BAT_DONG_SAN_MUTATION),
+        variables: { documentId: data.documentId, data }
+      })
+      await fetchBatDongSans()
+      return result.data.updateBatDongSan
+    } catch (error) {
+      console.error('Error updating bat dong san:', error)
+      return false
+    }
+  }
+
   return {
 
       batDongSans,
@@ -93,7 +121,9 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
       fetchBatCategories,
       batCategories,
       blogs,
-      fetchBlogs
+      fetchBlogs,
+      deleteBatDongSan,
+      updateBatDongSan
     }
   }
 )

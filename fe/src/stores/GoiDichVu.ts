@@ -29,7 +29,6 @@ export const useGoiDichVuStore = defineStore('goiDichVu', () => {
       }
 
       goiDichVus.value = result.data.goiDichVus
-
       return true
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Không thể tải danh sách gói dịch vụ'
@@ -70,6 +69,7 @@ export const useGoiDichVuStore = defineStore('goiDichVu', () => {
           }
         }
       };
+      localStorage.setItem('goiDichVu', JSON.stringify(goiDichVuByNguoiDung.value));
       return true;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Không thể tải danh sách gói dịch vụ'

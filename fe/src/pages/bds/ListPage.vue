@@ -1,166 +1,289 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row q-mb-lg">
-      <div class="col">
-        <h3 class="text-h4 q-mb-md">Danh sách Bất động sản</h3>
-        <q-separator class="q-mb-md" />
+  <q-page class="list-page">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-content">
+        <div class="header-text">
+          <h3 class="page-title">Quản lý Bất động sản</h3>
+          <p class="page-subtitle">Danh sách và quản lý toàn bộ bất động sản</p>
+        </div>
+        <div class="header-button">
+          <div class="header-button-item">
+            <q-btn
+              color="primary"
+              label="Thêm bất động sản"
+              icon="add"
+              to="/bds/create"
+              class="add-btn"
+              size="md"
+            />
+          </div>
+        </div>
+
       </div>
     </div>
 
-
-    <!-- Loading State -->
-    <div v-if="batDongSanStore.loading" class="row justify-center q-py-xl">
-      <q-spinner-dots size="50px" color="primary" />
-    </div>
-    <div class="row q-mb-lg justify-end">
-        <q-btn color="primary" label="Thêm bất động sản" icon="add" to="/bds/create" />
-    </div>
-    <!-- Table View -->
-    <div>
-      <q-table
-        :rows="paginatedBatDongSans"
-        :columns="tableColumns"
-        row-key="documentId"
-        flat
-        bordered
-        separator="cell"
-        :rows-per-page-options="[9, 15, 25, 50]"
-        :pagination="tablePagination"
-        @request="onTableRequest"
-        class="real-estate-table"
-      >
-        <!-- Custom column renderers -->
-        <template v-slot:body-cell-tieuDe="props">
-          <q-td :props="props" class="cursor-pointer" @click="viewDetail(props.row)">
-            <div class="text-weight-bold text-primary">
-              {{ props.value }}
-              <q-badge v-if="props.row.laNoiBat" color="red" class="q-ml-xs">
-                Nổi bật
-              </q-badge>
-            </div>
-            <div class="text-caption text-grey-6">
-              {{ props.row.moTaNgan }}
-            </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-giaBan="props">
-          <q-td :props="props">
-            <div class="text-weight-bold text-red">
-              {{ formatPrice(props.value, props.row.donViGia) }}
-            </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-diaChi="props">
-          <q-td :props="props">
-            <div class="flex items-center">
-              <q-icon name="location_on" size="16px" class="q-mr-xs" />
-              <div>
-                <div>{{ props.row.diaChi }}</div>
-                <div class="text-caption text-grey-6">
-                  {{ props.row.phuongXa }}, {{ props.row.tinh }}
+    <!-- Quota Section -->
+    <div class="quota-section">
+      <q-card class="quota-card" flat>
+        <q-card-section class="q-pa-lg">
+          <div class="row items-center justify-between">
+            <div class="col-auto">
+              <div class="quota-info">
+                <h6 class="quota-title">Giới hạn đăng bài</h6>
+                <div class="quota-details">
+                  <div class="quota-item">
+                    <q-icon name="business_center" size="20px" class="quota-icon" />
+                    <span class="quota-label">Gói hiện tại:</span>
+                    <q-chip :color="getPackageColor()" text-color="white" class="quota-chip">
+                      {{ goiDichVu?.khachHang?.goi_dich_vu?.tenGoi || 'Chưa xác định' }}
+                    </q-chip>
+                    <q-btn
+                      flat
+                      round
+                      size="sm"
+                      icon="info"
+                      color="grey-6"
+                      class="quota-info-btn"
+                    >
+                      <q-tooltip class="bg-grey-8" anchor="top middle" self="bottom middle">
+                        <div class="package-info">
+                          <div><strong>Gói Free:</strong> 5 bài đăng</div>
+                          <div><strong>Gói Basic:</strong> 100 bài đăng</div>
+                          <div><strong>Gói Premium:</strong> 300 bài đăng</div>
+                          <div><strong>Gói Enterprise:</strong> 400 bài đăng</div>
+                        </div>
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
+                  <div class="quota-item">
+                    <q-icon name="post_add" size="20px" class="quota-icon" />
+                    <span class="quota-label">Đã sử dụng:</span>
+                    <span class="quota-value">{{ soLuongBdsDaDang }} / {{ soLuongBdsDuocPhepDang }}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-dienTich="props">
-          <q-td :props="props">
-            <div class="flex items-center">
-              <q-icon name="straighten" size="16px" class="q-mr-xs" />
-              {{ formatNumber(props.value) }} m²
+            <div class="col-auto">
+              <div class="quota-progress">
+                <q-circular-progress
+                  :value="quotaPercentage"
+                  size="80px"
+                  :thickness="0.15"
+                  color="primary"
+                  track-color="grey-3"
+                  class="quota-circle"
+                >
+                  <div class="quota-percentage">{{ Math.round(quotaPercentage) }}%</div>
+                </q-circular-progress>
+              </div>
             </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-danhMuc="props">
-          <q-td :props="props">
-            <q-chip
-              color="blue-grey"
-              text-color="white"
-              dense
-              size="sm"
-              icon="category"
-            >
-              {{ props.row.danh_muc_bat_dong_san?.tenDanhMuc || 'Chưa phân loại' }}
-            </q-chip>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-trangThaiGiaoDich="props">
-          <q-td :props="props">
-            <q-chip
-              :color="getStatusColor(props.value)"
-              text-color="white"
-              dense
-              size="sm"
-            >
-              {{ props.value }}
-            </q-chip>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-trangThaiHoatDong="props">
-          <q-td :props="props">
-            <q-chip
-              :color="props.row.trangThaiHoatDong === true ? 'green' : 'red'"
-              text-color="white"
-              dense
-              size="sm"
-            >
-              {{ props.row.trangThaiHoatDong === true ? 'Hoạt động' : 'Không hoạt động' }}
-            </q-chip>
-          </q-td>
-          </template>
-
-        <template v-slot:body-cell-soLuotXem="props">
-          <q-td :props="props">
-            <div class="flex items-center">
-              <q-icon name="visibility" size="16px" class="q-mr-xs" />
-              {{ formatNumber(props.value) }}
+            <div class="col-auto">
+              <q-btn
+                @click="refreshData"
+                icon="refresh"
+                label="Làm mới"
+                outline
+                color="primary"
+                :loading="batDongSanStore.loading"
+              />
             </div>
-          </q-td>
-        </template>
+          </div>
 
-        <template v-slot:body-cell-ngayPublic="props">
-          <q-td :props="props">
-            {{ formatDate(props.value) }}
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div class="flex items-center">
-
-            <q-btn
-              flat
-              round
-              color="primary"
-              icon="visibility"
-              size="sm"
-              @click="viewDetail(props.row)"
+          <!-- Warning when quota is nearly full -->
+          <div v-if="quotaPercentage >= 80" class="quota-warning q-mt-md">
+            <q-banner
+              :class="quotaPercentage >= 100 ? 'bg-red-1 text-red' : 'bg-orange-1 text-orange'"
+              rounded
             >
-              <q-tooltip>Xem chi tiết</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              round
-              color="primary"
-              icon="edit"
-              size="sm"
-              @click="editDetail(props.row)"
-            >
-              <q-tooltip>Chỉnh sửa</q-tooltip>
-            </q-btn>
-            </div>
-          </q-td>
-        </template>
-      </q-table>
+              <template v-slot:avatar>
+                <q-icon :name="quotaPercentage >= 100 ? 'error' : 'warning'" />
+              </template>
+              <div v-if="quotaPercentage >= 100">
+                <strong>Đã đạt giới hạn!</strong> Bạn đã sử dụng hết quota đăng bài. Vui lòng nâng cấp gói để tiếp tục đăng.
+              </div>
+              <div v-else>
+                <strong>Sắp đạt giới hạn!</strong> Bạn đã sử dụng {{ Math.round(quotaPercentage) }}% quota. Cân nhắc nâng cấp gói.
+              </div>
+            </q-banner>
+          </div>
+        </q-card-section>
+      </q-card>
     </div>
+
+    <!-- Loading State -->
+    <div v-if="batDongSanStore.loading" class="loading-section">
+      <q-inner-loading showing>
+        <q-spinner-grid size="50px" color="primary" />
+        <div class="loading-text q-mt-md">Đang tải dữ liệu...</div>
+      </q-inner-loading>
+    </div>
+
+    <!-- Table Section -->
+    <div v-else class="table-section">
+      <q-card class="table-card" flat>
+        <q-card-section class="q-pa-none">
+          <q-table
+            :rows="paginatedBatDongSans"
+            :columns="tableColumns"
+            row-key="documentId"
+            flat
+            bordered
+            separator="cell"
+            :rows-per-page-options="[9, 15, 25, 50]"
+            :pagination="tablePagination"
+            @request="onTableRequest"
+            class="real-estate-table"
+            :loading="batDongSanStore.loading"
+          >
+            <!-- Custom column renderers -->
+            <template v-slot:body-cell-tieuDe="props">
+              <q-td :props="props" class="cursor-pointer title-cell" @click="viewDetail(props.row)">
+                <div class="title-content">
+                  <div class="title-text">
+                    {{ props.value }}
+                    <q-badge v-if="props.row.laNoiBat" color="red" class="q-ml-xs featured-badge">
+                      <q-icon name="star" size="12px" class="q-mr-xs" />
+                      Nổi bật
+                    </q-badge>
+                  </div>
+                  <div class="description-text">
+                    {{ props.row.moTaNgan }}
+                  </div>
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-giaBan="props">
+              <q-td :props="props">
+                <div class="price-content">
+                  {{ formatPrice(props.value, props.row.donViGia) }}
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-diaChi="props">
+              <q-td :props="props">
+                <div class="address-content">
+                  <q-icon name="location_on" size="16px" class="address-icon" />
+                  <div class="address-text">
+                    <div class="address-main">{{ props.row.diaChi }}</div>
+                    <div class="address-sub">
+                      {{ props.row.phuongXa }}, {{ props.row.tinh }}
+                    </div>
+                  </div>
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-dienTich="props">
+              <q-td :props="props">
+                <div class="area-content">
+                  <q-icon name="straighten" size="16px" class="area-icon" />
+                  <span class="area-text">{{ formatNumber(props.value) }} m²</span>
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-danhMuc="props">
+              <q-td :props="props">
+                <q-chip
+                  color="blue-grey-6"
+                  text-color="white"
+                  dense
+                  size="sm"
+                  icon="category"
+                  class="category-chip"
+                >
+                  {{ props.row.danh_muc_bat_dong_san?.tenDanhMuc || 'Chưa phân loại' }}
+                </q-chip>
+              </q-td>
+            </template>
+
+
+
+            <template v-slot:body-cell-trangThaiHoatDong="props">
+              <q-td :props="props">
+                <q-chip
+                  :color="props.row.trangThaiHoatDong === true ? 'green-6' : 'red-6'"
+                  text-color="white"
+                  dense
+                  size="sm"
+                  class="activity-chip"
+                >
+                  <q-icon
+                    :name="props.row.trangThaiHoatDong === true ? 'check_circle' : 'cancel'"
+                    size="12px"
+                    class="q-mr-xs"
+                  />
+                  {{ props.row.trangThaiHoatDong === true ? 'Hoạt động' : 'Không hoạt động' }}
+                </q-chip>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-soLuotXem="props">
+              <q-td :props="props">
+                <div class="views-content">
+                  <q-icon name="visibility" size="16px" class="views-icon" />
+                  <span class="views-text">{{ formatNumber(props.value) }}</span>
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-ngayPublic="props">
+              <q-td :props="props">
+                <div class="date-content">
+                  {{ formatDate(props.value) }}
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <div class="actions-content">
+                  <q-btn
+                    flat
+                    round
+                    color="blue-6"
+                    icon="visibility"
+                    size="sm"
+                    @click="viewDetail(props.row)"
+                    class="action-btn"
+                  >
+                    <q-tooltip>Xem chi tiết</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    color="orange-6"
+                    icon="edit"
+                    size="sm"
+                    @click="editDetail(props.row)"
+                    class="action-btn"
+                  >
+                    <q-tooltip>Chỉnh sửa</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    color="red-6"
+                    icon="delete"
+                    size="sm"
+                    @click="deleteDetail(props.row)"
+                    class="action-btn"
+                  >
+                    <q-tooltip>Xóa</q-tooltip>
+                  </q-btn>
+                </div>
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </div>
+
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="row justify-center q-mt-lg">
+    <div v-if="totalPages > 1" class="pagination-section">
       <q-pagination
         v-model="currentPage"
         :max="totalPages"
@@ -172,6 +295,7 @@
         active-design="unelevated"
         active-color="primary"
         active-text-color="white"
+        class="pagination-component"
       />
     </div>
   </q-page>
@@ -190,13 +314,10 @@ export default {
     const $q = useQuasar()
 
     // Reactive data
-    const searchText = ref('')
-    const selectedCategory = ref<{label: string, value: string} | null>(null)
-    const priceRange = ref<{label: string, value: {min: number, max: number}} | null>(null)
     const currentPage = ref(1)
     const itemsPerPage = 9
 
-    // Computed properties
+        // Computed properties
     const filteredBatDongSans = computed(() => {
       return batDongSanStore.batDongSans
     })
@@ -210,7 +331,6 @@ export default {
       const end = start + itemsPerPage
       return filteredBatDongSans.value.slice(start, end)
     })
-
     // Table configuration
     const tableColumns = ref([
       {
@@ -255,16 +375,8 @@ export default {
         style: 'width: 120px'
       },
       {
-        name: 'trangThaiGiaoDich',
-        label: 'Trạng thái',
-        align: 'center' as const,
-        field: 'trangThaiGiaoDich',
-        sortable: true,
-        style: 'width: 120px'
-      },
-      {
         name: 'trangThaiHoatDong',
-        label: 'Trạng thái hoạt động',
+        label: 'Hoạt động',
         align: 'center' as const,
         field: 'trangThaiHoatDong',
         sortable: true,
@@ -292,7 +404,7 @@ export default {
         align: 'center' as const,
         field: '',
         sortable: false,
-        style: 'width: 80px'
+        style: 'width: 120px'
       }
     ])
 
@@ -331,26 +443,7 @@ export default {
       return date.toLocaleDateString('vi-VN')
     }
 
-    const getImageUrl = () => {
-      // Return a placeholder image or handle the image URL logic
-      return '/favicon.ico' // Placeholder for now
-    }
 
-    const getStatusColor = (status: string) => {
-      switch (status?.toLowerCase()) {
-        case 'còn hàng':
-        case 'available':
-          return 'green'
-        case 'đã bán':
-        case 'sold':
-          return 'red'
-        case 'đang đàm phán':
-        case 'negotiating':
-          return 'orange'
-        default:
-          return 'grey'
-      }
-    }
 
     const viewDetail = (item: BatDongSan) => {
       // Navigate to detail page or show detail dialog
@@ -364,16 +457,85 @@ export default {
     const refreshData = async () => {
       await batDongSanStore.fetchBatDongSans()
       currentPage.value = 1
-      searchText.value = ''
-      selectedCategory.value = null
-      priceRange.value = null
     }
 
     const editDetail = (item: BatDongSan) => {
       console.log(item)
     }
 
-    // Lifecycle
+    const deleteDetail = (item: BatDongSan) => {
+      $q.dialog({
+        title: 'Xóa bất động sản',
+        message: 'Bạn có chắc chắn muốn xóa bất động sản này không?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        void (async () => {
+          const result = await batDongSanStore.deleteBatDongSan({ documentId: item.documentId })
+          if (result) {
+            $q.notify({
+              message: 'Bất động sản đã được xóa thành công',
+              color: 'positive',
+              position: 'top'
+            })
+            await refreshData()
+          } else {
+            $q.notify({
+              message: 'Có lỗi xảy ra khi xóa bất động sản',
+              color: 'negative',
+              position: 'top'
+            })
+          }
+        })()
+      })
+    }
+
+    const goiDichVu = computed(() => {
+      const goiDichVu = localStorage.getItem('goiDichVu')
+      return goiDichVu ? JSON.parse(goiDichVu) : null
+    })
+    const soLuongBdsDuocPhepDang = computed(() => {
+      if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Free') {
+        return 5;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Basic') {
+        return 100;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Premium') {
+        return 300;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Enterprise') {
+        return 400;
+      }
+      return 0;
+    })
+    const soLuongBdsDaDang = computed(() => {
+      return batDongSanStore.batDongSans.filter(item => item.trangThaiHoatDong === true).length
+    })
+    const xuLyBds = computed(() => {
+      if (soLuongBdsDaDang.value >= soLuongBdsDuocPhepDang.value) {
+        return false;
+      }
+      return true;
+    })
+
+    const quotaPercentage = computed(() => {
+      if (soLuongBdsDuocPhepDang.value === 0) return 0;
+      return (soLuongBdsDaDang.value / soLuongBdsDuocPhepDang.value) * 100;
+    })
+
+    const getPackageColor = () => {
+      const packageName = goiDichVu.value?.khachHang?.goi_dich_vu?.tenGoi;
+      switch (packageName) {
+        case 'Gói Free':
+          return 'grey-6';
+        case 'Gói Basic':
+          return 'blue-6';
+        case 'Gói Premium':
+          return 'purple-6';
+        case 'Gói Enterprise':
+          return 'green-6';
+        default:
+          return 'grey-6';
+      }
+    }
     onMounted(async () => {
       $q.loading.show({
         message: 'Đang tải dữ liệu...'
@@ -381,123 +543,465 @@ export default {
 
       try {
         await batDongSanStore.fetchBatDongSans()
-        } catch (error) {
-         console.error('Error loading data:', error)
-         $q.notify({
-           message: 'Có lỗi xảy ra khi tải dữ liệu',
-           color: 'negative',
-           position: 'top'
-         })
+      } catch (error) {
+        console.error('Error loading data:', error)
+        $q.notify({
+          message: 'Có lỗi xảy ra khi tải dữ liệu',
+          color: 'negative',
+          position: 'top'
+        })
       } finally {
         $q.loading.hide()
       }
     })
 
-    return {
+        return {
       batDongSanStore,
-      searchText,
-      selectedCategory,
-      priceRange,
       currentPage,
       filteredBatDongSans,
       paginatedBatDongSans,
       totalPages,
       tableColumns,
       tablePagination,
+      soLuongBdsDuocPhepDang,
+      soLuongBdsDaDang,
+      xuLyBds,
+      quotaPercentage,
+      getPackageColor,
+      goiDichVu,
       onTableRequest,
       formatPrice,
       formatNumber,
       formatDate,
-      getImageUrl,
-      getStatusColor,
       viewDetail,
       refreshData,
-      editDetail
+      editDetail,
+      deleteDetail
     }
   }
 }
 </script>
 
 <style scoped>
-.blog-card {
+.list-page {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* Header Section */
+.header-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: -24px -24px 24px -24px;
+  padding: 40px 24px;
+  color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 8px 0 0 0;
+}
+
+.add-btn {
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
   transition: all 0.3s ease;
-  height: 100%;
+}
+
+.add-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.header-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-button-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Quota Section */
+.quota-section {
+  margin-bottom: 24px;
+}
+
+.quota-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+}
+
+.quota-title {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.quota-details {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.blog-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+.quota-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.blog-image-container {
-  position: relative;
-  overflow: hidden;
+.quota-icon {
+  color: #6b7280;
 }
 
-.blog-image {
-  transition: transform 0.3s ease;
+.quota-label {
+  font-weight: 500;
+  color: #374151;
+  min-width: 100px;
 }
 
-.blog-card:hover .blog-image {
-  transform: scale(1.05);
+.quota-value {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.05rem;
 }
 
-.blog-overlay {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.q-card {
-  border-radius: 12px;
-}
-
-.q-card-section:first-child {
-  border-radius: 12px 12px 0 0;
-}
-
-/* Table styles */
-.real-estate-table {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.real-estate-table .q-table__top {
-  padding: 16px;
-  background: #f5f5f5;
-}
-
-.real-estate-table th {
+.quota-chip {
   font-weight: 600;
-  background: #fafafa;
-  border-bottom: 2px solid #e0e0e0;
+  border-radius: 8px;
 }
 
-.real-estate-table td {
-  border-bottom: 1px solid #f0f0f0;
+.quota-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.real-estate-table tbody tr:hover {
-  background-color: #f8f9fa;
+.quota-circle {
+  position: relative;
 }
 
-.real-estate-table .q-chip {
-  min-height: 24px;
+.quota-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1f2937;
+}
+
+.quota-warning {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.quota-info-btn {
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.quota-info-btn:hover {
+  opacity: 1;
+}
+
+.package-info {
+  padding: 8px 0;
+  line-height: 1.4;
+}
+
+.package-info > div {
+  margin-bottom: 4px;
+}
+
+.package-info > div:last-child {
+  margin-bottom: 0;
+}
+
+/* Loading Section */
+.loading-section {
+  background: white;
+  border-radius: 16px;
+  min-height: 400px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.loading-text {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Table Section */
+.table-section {
+  margin-bottom: 24px;
+}
+
+.table-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.real-estate-table {
+  border-radius: 16px;
+}
+
+.real-estate-table :deep(.q-table__top) {
+  background: #f8fafb;
+}
+
+.real-estate-table :deep(th) {
+  background: #f8fafb;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 16px 12px;
+}
+
+.real-estate-table :deep(td) {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.real-estate-table :deep(tbody tr:hover) {
+  background-color: #f9fafb;
+}
+
+/* Table Cell Styles */
+.title-cell {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.title-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title-text {
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+}
+
+.description-text {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.featured-badge {
+  border-radius: 8px;
+  font-size: 0.7rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.price-content {
+  font-weight: 700;
+  color: #dc2626;
+  font-size: 1.05rem;
+}
+
+.address-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.address-icon {
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.address-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.address-main {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.address-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.area-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.area-icon {
+  color: #6b7280;
+}
+
+.area-text {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.views-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.views-icon {
+  color: #6b7280;
+}
+
+.views-text {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.date-content {
+  font-weight: 500;
+  color: #1f2937;
+  text-align: center;
+}
+
+/* Chip Styles */
+.category-chip,
+.activity-chip {
+  border-radius: 8px;
+  font-weight: 500;
+  min-height: 28px;
+}
+
+/* Actions */
+.actions-content {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.action-btn {
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Pagination */
+.pagination-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.pagination-component {
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .list-page {
+    padding: 16px;
+  }
+
+  .header-section {
+    margin: -16px -16px 16px -16px;
+    padding: 24px 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .add-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  /* Quota responsive */
+  .quota-card .row {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .quota-details {
+    align-items: center;
+  }
+
+  .quota-item {
+    justify-content: center;
+  }
+
+  .quota-label {
+    min-width: auto;
+  }
+
+  .real-estate-table :deep(.q-table__control) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .real-estate-table :deep(th),
+  .real-estate-table :deep(td) {
+    padding: 12px 8px;
+  }
 }
 </style>

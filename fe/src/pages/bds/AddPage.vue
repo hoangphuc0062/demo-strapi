@@ -45,7 +45,7 @@
                     </template>
                   </q-input>
                 </div>
- <!-- Thông tin giá cả -->
+
                 <div class="form-row ">
                   <q-input
                     v-model.number="form.giaBan"
@@ -63,7 +63,6 @@
                     </template>
                   </q-input>
                 </div>
-
                 <div class="form-row ">
                   <q-input
                     v-model.number="form.dienTich"
@@ -98,7 +97,6 @@
                     </template>
                   </q-input>
                 </div>
-
                 <div class="form-row ">
                   <q-input
                     v-model="form.moTaChiTiet"

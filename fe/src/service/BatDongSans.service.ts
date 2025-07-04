@@ -87,4 +87,21 @@ query BaiDangs {
   }
 }
 `;
-export { GET_BAT_DONG_SAN_QUERY, CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BLOG_QUERY }
+
+const DELETE_BAT_DONG_SAN_MUTATION = `
+mutation DeleteBatDongSan($documentId: ID!) {
+  deleteBatDongSan(documentId: $documentId) {
+    documentId
+  }
+}
+`;
+
+const UPDATE_BAT_DONG_SAN_MUTATION = `
+mutation UpdateBatDongSan($documentId: ID!, $data: BatDongSanInput!) {
+  updateBatDongSan(documentId: $documentId, data: $data) {
+    documentId
+  }
+}
+`;
+
+export { GET_BAT_DONG_SAN_QUERY, CREATE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BLOG_QUERY, DELETE_BAT_DONG_SAN_MUTATION, UPDATE_BAT_DONG_SAN_MUTATION }

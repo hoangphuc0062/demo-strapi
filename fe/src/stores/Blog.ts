@@ -3,8 +3,8 @@ import { ref } from 'vue'
 
 import { apolloClient } from 'src/boot/apollo'
 import gql from 'graphql-tag'
-import type { Blog, BlogInput, DanhMucBaiViet } from 'src/types'
-import { CREATE_BAI_DANG_MUTATION, GET_BAI_DANG_QUERY, GET_DANH_MUC_BAI_VIET_QUERY } from 'src/service'
+import type { Blog, BlogInput, DanhMucBaiViet, DeleteBaiDangInput, UpdateBaiDangInput } from 'src/types'
+import { CREATE_BAI_DANG_MUTATION, DELETE_BAI_DANG_MUTATION, GET_BAI_DANG_QUERY, GET_DANH_MUC_BAI_VIET_QUERY, UPDATE_BAI_DANG_MUTATION } from 'src/service'
 
 
 export const useBlogStore = defineStore('blog', () => {
@@ -62,6 +62,34 @@ export const useBlogStore = defineStore('blog', () => {
     }
   }
 
+  const deleteBaiDang = async (data: DeleteBaiDangInput): Promise<boolean> => {
+    try {
+      const result = await apolloClient.mutate({
+        mutation: gql(DELETE_BAI_DANG_MUTATION),
+        variables: { documentId: data.documentId }
+      })
+      await fetchBaiDangs()
+      return result.data.deleteBaiDang
+    } catch (error) {
+      console.error('Error deleting bai dang:', error)
+      return false
+    }
+  }
+
+  const updateBaiDang = async (data: UpdateBaiDangInput): Promise<boolean> => {
+    try {
+      const result = await apolloClient.mutate({
+        mutation: gql(UPDATE_BAI_DANG_MUTATION),
+        variables: { documentId: data.documentId, data }
+      })
+      await fetchBaiDangs()
+      return result.data.updateBaiDang
+    } catch (error) {
+      console.error('Error updating bai dang:', error)
+      return false
+    }
+  }
+
   return {
     blogs,
     loading,
@@ -70,6 +98,8 @@ export const useBlogStore = defineStore('blog', () => {
     fetchBaiDangs,
     createBaiDang,
     fetchDanhMucBaiViets,
+    deleteBaiDang,
+    updateBaiDang
   }
 })
 

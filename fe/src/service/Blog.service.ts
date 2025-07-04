@@ -60,4 +60,21 @@ query DanhMucBaiViets {
 }
 `
 
-export { GET_BAI_DANG_QUERY, CREATE_BAI_DANG_MUTATION, GET_DANH_MUC_BAI_VIET_QUERY }
+
+const DELETE_BAI_DANG_MUTATION = `
+mutation DeleteBaiDang($documentId: ID!) {
+  deleteBaiDang(documentId: $documentId) {
+    documentId
+  }
+}
+`
+
+const UPDATE_BAI_DANG_MUTATION = `
+mutation UpdateBaiDang($documentId: ID!, $data: BaiDangInput!) {
+  updateBaiDang(documentId: $documentId, data: $data) {
+    documentId
+  }
+}
+`
+
+export { GET_BAI_DANG_QUERY, CREATE_BAI_DANG_MUTATION, GET_DANH_MUC_BAI_VIET_QUERY, DELETE_BAI_DANG_MUTATION, UPDATE_BAI_DANG_MUTATION }

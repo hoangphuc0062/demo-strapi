@@ -196,6 +196,9 @@ import { useBlogStore } from 'src/stores/Blog'
 import type { Blog } from 'src/types'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 const blogStore = useBlogStore()
 const router = useRouter()
 const columns = [
@@ -265,11 +268,30 @@ const editBlog = (blog: Blog) => {
 }
 
 const deleteBlog = (blog: Blog) => {
-  console.log('Xóa blog:', blog)
-  // TODO: Show confirmation dialog and delete blog
-  // if (confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
-  //   blogStore.deleteBlog(blog.documentId)
-  // }
+  $q.dialog({
+    title: 'Xóa bài viết',
+    message: 'Bạn có chắc chắn muốn xóa bài viết này không?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    void (async () => {
+      const result = await blogStore.deleteBaiDang({ documentId: blog.documentId })
+      if (result) {
+        $q.notify({
+          message: 'Bài viết đã được xóa thành công',
+          color: 'positive',
+          position: 'top'
+        })
+        await blogStore.fetchBaiDangs()
+      } else {
+        $q.notify({
+          message: 'Có lỗi xảy ra khi xóa bài viết',
+          color: 'negative',
+          position: 'top'
+        })
+      }
+    })()
+  })
 }
 
 onMounted(async () => {
