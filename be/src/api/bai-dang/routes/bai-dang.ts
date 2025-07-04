@@ -4,4 +4,4 @@
 
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreRouter('api::bai-dang.bai-dang');
+export default factories.createCoreRouter('api::bai-dang.bai-dang' as any);
