@@ -50,15 +50,6 @@
           </q-td>
         </template>
 
-        <template v-slot:body-cell-khachHang="props">
-          <q-td :props="props">
-            <div class="flex items-center">
-              <q-icon name="person" size="16px" class="q-mr-xs" />
-              {{ `${props.row.khach_hang?.ho || ''} ${props.row.khach_hang?.ten || ''}`.trim() || 'Chưa có thông tin' }}
-            </div>
-          </q-td>
-        </template>
-
         <template v-slot:body-cell-diaChi="props">
           <q-td :props="props">
             <div class="flex items-center">
@@ -108,6 +99,19 @@
             </q-chip>
           </q-td>
         </template>
+
+        <template v-slot:body-cell-trangThaiHoatDong="props">
+          <q-td :props="props">
+            <q-chip
+              :color="props.row.trangThaiHoatDong === true ? 'green' : 'red'"
+              text-color="white"
+              dense
+              size="sm"
+            >
+              {{ props.row.trangThaiHoatDong === true ? 'Hoạt động' : 'Không hoạt động' }}
+            </q-chip>
+          </q-td>
+          </template>
 
         <template v-slot:body-cell-soLuotXem="props">
           <q-td :props="props">
@@ -212,14 +216,6 @@ export default {
         style: 'width: 150px'
       },
       {
-        name: 'khachHang',
-        label: 'Khách hàng',
-        align: 'left' as const,
-        field: (row: BatDongSan) => `${row.khach_hang?.ho || ''} ${row.khach_hang?.ten || ''}`.trim(),
-        sortable: true,
-        style: 'width: 150px'
-      },
-      {
         name: 'diaChi',
         label: 'Địa chỉ',
         align: 'left' as const,
@@ -248,6 +244,14 @@ export default {
         label: 'Trạng thái',
         align: 'center' as const,
         field: 'trangThaiGiaoDich',
+        sortable: true,
+        style: 'width: 120px'
+      },
+      {
+        name: 'trangThaiHoatDong',
+        label: 'Trạng thái hoạt động',
+        align: 'center' as const,
+        field: 'trangThaiHoatDong',
         sortable: true,
         style: 'width: 120px'
       },

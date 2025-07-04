@@ -274,12 +274,12 @@ export default {
           ],
         },
         {
-          icon: 'category',
+          icon: 'article',
           color: 'primary',
-          text: 'Danh mục',
+          text: 'Blog',
           children: [
-            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/category/list' },
-            { icon: 'add', color: 'primary', text: 'Thêm', link: '/category/create' },
+            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/blog/list' },
+            { icon: 'add', color: 'primary', text: 'Thêm', link: '/blog/create' },
           ],
         },
       ],
