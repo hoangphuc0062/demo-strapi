@@ -6,11 +6,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'category/list', component: () => import('pages/category/ListPage.vue') },
       { path: 'goi-dich-vu/list', component: () => import('pages/GoiDichVu/ListPage.vue') },
       { path: 'bds/list', component: () => import('pages/bds/ListPage.vue') },
       { path: 'bds/create', component: () => import('pages/bds/AddPage.vue') },
       { path: 'blog/list', component: () => import('pages/blog/ListPage.vue') },
+      { path: 'blog/create', component: () => import('pages/blog/AddPage.vue') },
     ],
   },
   {

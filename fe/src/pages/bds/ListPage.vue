@@ -12,7 +12,9 @@
     <div v-if="batDongSanStore.loading" class="row justify-center q-py-xl">
       <q-spinner-dots size="50px" color="primary" />
     </div>
-
+    <div class="row q-mb-lg justify-end">
+        <q-btn color="primary" label="Thêm bất động sản" icon="add" to="/bds/create" />
+    </div>
     <!-- Table View -->
     <div>
       <q-table
@@ -130,6 +132,8 @@
 
         <template v-slot:body-cell-actions="props">
           <q-td :props="props">
+            <div class="flex items-center">
+
             <q-btn
               flat
               round
@@ -140,6 +144,17 @@
             >
               <q-tooltip>Xem chi tiết</q-tooltip>
             </q-btn>
+            <q-btn
+              flat
+              round
+              color="primary"
+              icon="edit"
+              size="sm"
+              @click="editDetail(props.row)"
+            >
+              <q-tooltip>Chỉnh sửa</q-tooltip>
+            </q-btn>
+            </div>
           </q-td>
         </template>
       </q-table>
@@ -354,6 +369,10 @@ export default {
       priceRange.value = null
     }
 
+    const editDetail = (item: BatDongSan) => {
+      console.log(item)
+    }
+
     // Lifecycle
     onMounted(async () => {
       $q.loading.show({
@@ -392,7 +411,8 @@ export default {
       getImageUrl,
       getStatusColor,
       viewDetail,
-      refreshData
+      refreshData,
+      editDetail
     }
   }
 }

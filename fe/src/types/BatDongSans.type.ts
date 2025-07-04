@@ -64,12 +64,11 @@ interface BatDongSanInput {
   soLuotXem: number
   ngayPublic: string
   khach_hang: string
-  anh: string
   laNoiBat: boolean
   danhSachAnh: string[]
   danh_muc_bat_dong_san: string
   trangThaiHoatDong: boolean
-  bai_viet: string[]
+  bai_viet: string
 }
 
 interface BlogBDS {
