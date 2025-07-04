@@ -265,12 +265,12 @@ export default {
           ],
         },
         {
-          icon: 'article',
+          icon: 'home',
           color: 'primary',
-          text: 'Bài viết',
+          text: 'Bất động sản',
           children: [
-            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/article/list' },
-            { icon: 'add', color: 'primary', text: 'Thêm', link: '/article/create' },
+            { icon: 'list', color: 'primary', text: 'Danh sách', link: '/bds/list' },
+            { icon: 'add', color: 'primary', text: 'Thêm', link: '/bds/create' },
           ],
         },
         {
