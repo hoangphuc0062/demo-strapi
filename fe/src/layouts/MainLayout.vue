@@ -238,6 +238,7 @@ export default {
         void goiDichVuStore.fetchGoiDichVusByNguoiDung(authStore.user.id);
       }
     });
+    conslole.log('goiDichVuByNguoiDung', goiDichVuByNguoiDung.value);
 
     return {
       fabYoutube,
