@@ -1,12 +1,11 @@
 const GET_BAI_DANG_QUERY = `
-query BaiDangs {
-  baiDangs {
+query BaiDangs($filters: BaiDangFiltersInput) {
+  baiDangs(filters: $filters) {
     documentId
     khach_hang {
       ho
       ten
     }
-
     bat_dong_sans {
       tieuDe
       documentId

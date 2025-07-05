@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import { apolloClient } from 'src/boot/apollo'
 import gql from 'graphql-tag'
-import type { Blog, BlogInput, DanhMucBaiViet, DeleteBaiDangInput, UpdateBaiDangInput } from 'src/types'
+import type { BatDongSanFiltersInput, Blog, BlogInput, DanhMucBaiViet, DeleteBaiDangInput, UpdateBaiDangInput } from 'src/types'
 import { CREATE_BAI_DANG_MUTATION, DELETE_BAI_DANG_MUTATION, GET_BAI_DANG_QUERY, GET_DANH_MUC_BAI_VIET_QUERY, UPDATE_BAI_DANG_MUTATION } from 'src/service'
 
 
@@ -11,10 +11,15 @@ export const useBlogStore = defineStore('blog', () => {
   const blogs = ref<Blog[]>([])
   const loading = ref(false)
   const danhMucBaiViets = ref<DanhMucBaiViet[]>([])
-  const fetchBaiDangs = async (): Promise<boolean> => {
+  const fetchBaiDangs = async (filters?: BatDongSanFiltersInput): Promise<boolean> => {
     try {
+      const userLocal = localStorage.getItem('user')
+      const user = userLocal ? JSON.parse(userLocal) : null
       const result = await apolloClient.query({
         query: gql(GET_BAI_DANG_QUERY),
+        variables: {
+          filters: filters || { khach_hang: { documentId: { eq: user.id } } }
+        },
         fetchPolicy: 'no-cache'
       })
       if (!result?.data?.baiDangs) {
@@ -80,7 +85,7 @@ export const useBlogStore = defineStore('blog', () => {
     try {
       const result = await apolloClient.mutate({
         mutation: gql(UPDATE_BAI_DANG_MUTATION),
-        variables: { documentId: data.documentId, data }
+        variables: { documentId: data.documentId, data: data.data }
       })
       await fetchBaiDangs()
       return result.data.updateBaiDang

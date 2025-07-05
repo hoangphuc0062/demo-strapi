@@ -10,4 +10,5 @@ export default [
   'strapi::favicon',
   'strapi::public',
   'global::graphql-auth-bypass',
+  'global::graphql-bigint-serializer',
 ];

@@ -1,6 +1,6 @@
 const GET_BAT_DONG_SAN_QUERY = `
-query BatDongSans {
-  batDongSans {
+query BatDongSans($filters: BatDongSanFiltersInput) {
+ batDongSans(filters: $filters) {
     documentId
     tieuDe
     moTaNgan

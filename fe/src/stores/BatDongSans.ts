@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import { apolloClient } from 'src/boot/apollo'
 import gql from 'graphql-tag'
-import type { BatCategory, BatDongSan, BatDongSanInput, BlogBDS, DeleteBatDongSanInput, UpdateBatDongSanInput } from 'src/types'
+import type { BatCategory, BatDongSan, BatDongSanFiltersInput, BatDongSanInput, BlogBDS, DeleteBatDongSanInput, UpdateBatDongSanInput } from 'src/types'
 import { CREATE_BAT_DONG_SAN_MUTATION, DELETE_BAT_DONG_SAN_MUTATION, GET_BAT_CATEGORY_QUERY, GET_BAT_DONG_SAN_QUERY, GET_BLOG_QUERY, UPDATE_BAT_DONG_SAN_MUTATION } from 'src/service'
 
 export const useBatDongSanStore = defineStore('batDongSan', () => {
@@ -12,13 +12,15 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
   const batCategories = ref<BatCategory[]>([])
   const blogs = ref<BlogBDS[]>([])
 
-  const fetchBatDongSans = async (pagination?: { page?: number; pageSize?: number }): Promise<boolean> => {
+  const fetchBatDongSans = async (filters?: BatDongSanFiltersInput): Promise<boolean> => {
     loading.value = true
     try {
+      const userLocal = localStorage.getItem('user')
+      const user = userLocal ? JSON.parse(userLocal) : null
       const result = await apolloClient.query({
         query: gql(GET_BAT_DONG_SAN_QUERY),
         variables: {
-          pagination: pagination || { page: 1, pageSize: 25 }
+          filters: filters || { khach_hang: { documentId: { eq: user.id } } }
         },
         fetchPolicy: 'no-cache' // Always fetch fresh data
       })
@@ -102,7 +104,7 @@ export const useBatDongSanStore = defineStore('batDongSan', () => {
     try {
       const result = await apolloClient.mutate({
         mutation: gql(UPDATE_BAT_DONG_SAN_MUTATION),
-        variables: { documentId: data.documentId, data }
+        variables: { documentId: data.documentId, data: data.data }
       })
       await fetchBatDongSans()
       return result.data.updateBatDongSan
