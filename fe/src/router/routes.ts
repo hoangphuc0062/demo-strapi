@@ -9,8 +9,10 @@ const routes: RouteRecordRaw[] = [
       { path: 'goi-dich-vu/list', component: () => import('pages/GoiDichVu/ListPage.vue') },
       { path: 'bds/list', component: () => import('pages/bds/ListPage.vue') },
       { path: 'bds/create', component: () => import('pages/bds/AddPage.vue') },
+      { path: 'bds/update', component: () => import('pages/bds/UpdatePage.vue') },
       { path: 'blog/list', component: () => import('pages/blog/ListPage.vue') },
       { path: 'blog/create', component: () => import('pages/blog/AddPage.vue') },
+      { path: 'blog/update', component: () => import('pages/blog/UpdatePage.vue') },
     ],
   },
   {

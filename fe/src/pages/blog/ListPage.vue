@@ -262,9 +262,8 @@ const viewBlog = (blog: Blog) => {
 }
 
 const editBlog = (blog: Blog) => {
-  console.log('Chỉnh sửa blog:', blog)
-  // TODO: Navigate to edit page or open edit dialog
-  // router.push(`/blog/edit/${blog.documentId}`)
+  localStorage.setItem('blogEdit', JSON.stringify(blog))
+  void router.push('/blog/update')
 }
 
 const deleteBlog = (blog: Blog) => {

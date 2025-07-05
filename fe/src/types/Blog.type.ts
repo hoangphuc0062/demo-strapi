@@ -30,8 +30,9 @@ interface BlogsListResponses {
 
 
 interface BlogInput {
+  documentId?: string,
   khach_hang: string,
-  bat_dong_sans: string,
+  bat_dong_sans?: string,
   tieuDe: string,
   slug: string,
   moTaNgan: string,

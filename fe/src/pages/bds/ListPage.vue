@@ -306,13 +306,14 @@ import { useBatDongSanStore } from 'src/stores/BatDongSans'
 import { onMounted, computed, ref } from 'vue'
 import { useQuasar } from 'quasar'
 import type { BatDongSan } from 'src/types'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'BlogsListPage',
   setup() {
     const batDongSanStore = useBatDongSanStore()
     const $q = useQuasar()
-
+    const router = useRouter()
     // Reactive data
     const currentPage = ref(1)
     const itemsPerPage = 9
@@ -460,7 +461,8 @@ export default {
     }
 
     const editDetail = (item: BatDongSan) => {
-      console.log(item)
+      localStorage.setItem('bdsEdit', JSON.stringify(item))
+      void router.push('/bds/update')
     }
 
     const deleteDetail = (item: BatDongSan) => {

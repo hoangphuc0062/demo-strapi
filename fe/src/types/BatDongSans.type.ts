@@ -49,6 +49,7 @@ interface BatCategoryListResponse {
 }
 
 interface BatDongSanInput {
+  documentId?: string
   tieuDe: string
   moTaNgan: string
   moTaChiTiet: string
@@ -89,4 +90,13 @@ interface UpdateBatDongSanInput {
   data: BatDongSanInput
 }
 
-export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput, BlogBDS, BlogListResponse, DeleteBatDongSanInput, UpdateBatDongSanInput }
+interface BatDongSanFiltersInput {
+
+    khach_hang: {
+      documentId: {
+        eq: string
+      }
+    }
+}
+
+export type { BatDongSan, BatDongSanListResponse, BatCategory, BatCategoryListResponse, BatDongSanInput, BlogBDS, BlogListResponse, DeleteBatDongSanInput, UpdateBatDongSanInput, BatDongSanFiltersInput }
