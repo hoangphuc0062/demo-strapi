@@ -199,25 +199,38 @@
                 </q-chip>
               </q-td>
             </template>
-
-
-
             <template v-slot:body-cell-trangThaiHoatDong="props">
               <q-td :props="props">
-                <q-chip
-                  :color="props.row.trangThaiHoatDong === true ? 'green-6' : 'red-6'"
-                  text-color="white"
+                <q-select
+                  :model-value="props.row.trangThaiHoatDong"
+                  :options="statusOptions"
+                  option-value="value"
+                  option-label="label"
                   dense
-                  size="sm"
-                  class="activity-chip"
+                  outlined
+                  emit-value
+                  map-options
+                  @update:model-value="(value) => confirmStatusChange(props.row, value)"
+                  :loading="updatingStatus === props.row.documentId"
+                  class="status-select"
                 >
-                  <q-icon
-                    :name="props.row.trangThaiHoatDong === true ? 'check_circle' : 'cancel'"
-                    size="12px"
-                    class="q-mr-xs"
-                  />
-                  {{ props.row.trangThaiHoatDong === true ? 'Hoạt động' : 'Không hoạt động' }}
-                </q-chip>
+                  <template v-slot:selected-item="scope">
+                  {{ scope.opt.label }}
+                  </template>
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section avatar>
+                        <q-icon
+                          :name="scope.opt.value === true ? 'check_circle' : 'cancel'"
+                          :color="scope.opt.value === true ? 'green-6' : 'red-6'"
+                        />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
               </q-td>
             </template>
 
@@ -317,6 +330,13 @@ export default {
     // Reactive data
     const currentPage = ref(1)
     const itemsPerPage = 9
+    const updatingStatus = ref<string | null>(null)
+
+    // Status options for dropdown
+    const statusOptions = [
+      { label: 'Hoạt động', value: true },
+      { label: 'Không hoạt động', value: false }
+    ]
 
         // Computed properties
     const filteredBatDongSans = computed(() => {
@@ -492,6 +512,66 @@ export default {
       })
     }
 
+        const confirmStatusChange = (item: BatDongSan, newStatus: boolean) => {
+      const currentStatusText = item.trangThaiHoatDong ? 'Hoạt động' : 'Không hoạt động'
+      const newStatusText = newStatus ? 'Hoạt động' : 'Không hoạt động'
+
+      $q.dialog({
+        title: 'Xác nhận thay đổi trạng thái',
+        message: `Bạn có chắc chắn muốn thay đổi trạng thái từ "${currentStatusText}" thành "${newStatusText}" không?`,
+        cancel: {
+          label: 'Hủy',
+          color: 'grey',
+          flat: true
+        },
+        ok: {
+          label: 'Xác nhận',
+          color: 'primary'
+        },
+        persistent: true
+      }).onOk(() => {
+        void toggleStatus(item, newStatus)
+      }).onCancel(() => {
+        // Do nothing, just close dialog
+      })
+    }
+
+    const toggleStatus = async (item: BatDongSan, newStatus: boolean) => {
+      updatingStatus.value = item.documentId
+
+      try {
+        const result = await batDongSanStore.updateBatDongSan({
+          documentId: item.documentId,
+          data: {
+            trangThaiHoatDong: newStatus
+          } as any // eslint-disable-line @typescript-eslint/no-explicit-any
+        })
+
+        if (result) {
+          $q.notify({
+            message: `Đã ${newStatus ? 'kích hoạt' : 'tắt'} trạng thái bất động sản`,
+            color: 'positive',
+            position: 'top'
+          })
+        } else {
+          $q.notify({
+            message: 'Có lỗi xảy ra khi cập nhật trạng thái',
+            color: 'negative',
+            position: 'top'
+          })
+        }
+      } catch (error) {
+        console.error('Error updating status:', error)
+        $q.notify({
+          message: 'Có lỗi xảy ra khi cập nhật trạng thái',
+          color: 'negative',
+          position: 'top'
+        })
+      } finally {
+        updatingStatus.value = null
+      }
+    }
+
     const goiDichVu = computed(() => {
       const goiDichVu = localStorage.getItem('goiDichVu')
       return goiDichVu ? JSON.parse(goiDichVu) : null
@@ -511,6 +591,7 @@ export default {
     const soLuongBdsDaDang = computed(() => {
       return batDongSanStore.batDongSans.filter(item => item.trangThaiHoatDong === true).length
     })
+    localStorage.setItem('soLuongBdsDuocPhepDang', soLuongBdsDuocPhepDang.value.toString())
     const xuLyBds = computed(() => {
       if (soLuongBdsDaDang.value >= soLuongBdsDuocPhepDang.value) {
         return false;
@@ -571,6 +652,8 @@ export default {
       quotaPercentage,
       getPackageColor,
       goiDichVu,
+      updatingStatus,
+      statusOptions,
       onTableRequest,
       formatPrice,
       formatNumber,
@@ -578,7 +661,9 @@ export default {
       viewDetail,
       refreshData,
       editDetail,
-      deleteDetail
+      deleteDetail,
+      toggleStatus,
+      confirmStatusChange
     }
   }
 }
@@ -918,6 +1003,35 @@ export default {
   border-radius: 8px;
   font-weight: 500;
   min-height: 28px;
+}
+
+.clickable-chip {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.clickable-chip:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.clickable-chip:active {
+  transform: scale(0.98);
+}
+
+/* Status Select */
+.status-select {
+  min-width: 140px;
+}
+
+.status-select :deep(.q-field__control) {
+  min-height: 32px;
+  border-radius: 8px;
+}
+
+.status-select :deep(.q-field__native) {
+  padding: 0 8px;
 }
 
 /* Actions */
