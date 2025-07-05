@@ -356,6 +356,7 @@
                     />
                   </div>
                 </div>
+
               </div>
             </q-card-section>
           </q-card>
@@ -396,7 +397,7 @@
 
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useBatDongSanStore } from 'src/stores/BatDongSans'
@@ -429,6 +430,26 @@ const form = reactive({
   trangThaiHoatDong: true,
   bai_viet: ''
 })
+
+    const goiDichVu = computed(() => {
+      const goiDichVu = localStorage.getItem('goiDichVu')
+      return goiDichVu ? JSON.parse(goiDichVu) : null
+    })
+     const soLuongBdsDuocPhepDang = computed(() => {
+      if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Free') {
+        return 5;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Basic') {
+        return 100;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Premium') {
+        return 300;
+      } else if (goiDichVu.value.khachHang.goi_dich_vu.tenGoi === 'Gói Enterprise') {
+        return 400;
+      }
+      return 0;
+    })
+    const soLuongBdsDaDang = computed(() => {
+      return batDongSanStore.batDongSans.filter(item => item.trangThaiHoatDong === true).length
+    })
 
 const loaiBdsOptions = ref<{ label: string, value: string }[]>([])
 
@@ -463,6 +484,7 @@ const onSubmit = async () => {
       donViGia: 'VNĐ',
       khach_hang: userData.id as string,
       danhSachAnh: [],
+      trangThaiHoatDong: soLuongBdsDaDang.value >= soLuongBdsDuocPhepDang.value ? false : true
     }
 
     const success = await batDongSanStore.createBatDongSan(formData)
