@@ -167,16 +167,16 @@
                   </template>
                 </q-input>
               </div>
-               <div class="form-group full-width">
+              <div class="form-group full-width">
                 <q-select
                   v-model="blogEdit.bat_dong_sans"
                   label="Bất động sản"
                   outlined
-                  :options="batDongSanStore.batCategories"
-                  emit-value
-                  map-options
-                  option-value="documentId"
-                  option-label="tenDanhMuc"
+                  multiple
+                  class="custom-input"
+                  :options="batDongSanOptions"
+                  use-chips
+                  clearable
                 >
                   <template v-slot:prepend>
                     <q-icon name="home" color="primary" />
@@ -217,7 +217,7 @@
 import { useBlogStore } from 'src/stores/Blog'
 import { useBatDongSanStore } from 'src/stores/BatDongSans'
 import { useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import type { BlogInput } from 'src/types'
 
@@ -228,7 +228,7 @@ const batDongSanStore = useBatDongSanStore()
 const blogEdit = ref<BlogInput>({
   documentId: '',
   khach_hang: '',
-  bat_dong_sans: '',
+  bat_dong_sans: [],
   tieuDe: '',
   slug: '',
   moTaNgan: '',
@@ -239,9 +239,17 @@ const blogEdit = ref<BlogInput>({
   danh_muc_bai_viet: '',
   anhDaiDien: '',
 })
+const user = JSON.parse(localStorage.getItem('user') || '{}')
+
+// Computed property to transform bat dong san data for q-select
+const batDongSanOptions = computed(() => {
+  return batDongSanStore.batDongSans.map(bds => ({
+    label: bds.tieuDe,
+    value: bds.documentId
+  }))
+})
 
 const onSubmit = async () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
   const data = {
     tieuDe: blogEdit.value.tieuDe,
     slug: blogEdit.value.slug,
@@ -253,6 +261,11 @@ const onSubmit = async () => {
     danh_muc_bai_viet: blogEdit.value.danh_muc_bai_viet,
     anhDaiDien: blogEdit.value.anhDaiDien,
     khach_hang: user.id,
+        ...(blogEdit.value.bat_dong_sans && Array.isArray(blogEdit.value.bat_dong_sans) && blogEdit.value.bat_dong_sans.length > 0 && {
+      bat_dong_sans: blogEdit.value.bat_dong_sans.map(item =>
+        typeof item === 'string' ? item : (item as { value: string }).value
+      )
+    })
   }
   const res = await blogStore.updateBaiDang({
     documentId: blogEdit.value.documentId || '',
@@ -276,10 +289,36 @@ const onSubmit = async () => {
 }
 
 onMounted(async () => {
-  blogEdit.value = JSON.parse(localStorage.getItem('blogEdit') || '{}')
+  const savedBlog = JSON.parse(localStorage.getItem('blogEdit') || '{}')
+
+  // First load the bat dong san data
+  await batDongSanStore.fetchBatDongSans(
+    {
+      khach_hang: {
+        documentId: {
+          eq: user.id,
+        }
+      }
+    }
+  )
+
+  // Convert bat_dong_sans to proper format for q-select
+  if (savedBlog.bat_dong_sans && Array.isArray(savedBlog.bat_dong_sans)) {
+    savedBlog.bat_dong_sans = savedBlog.bat_dong_sans.map((itemId: string) => {
+      const found = batDongSanStore.batDongSans.find(bds => bds.documentId === itemId)
+      return found ? { label: found.tieuDe, value: found.documentId } : null
+    }).filter(Boolean)
+  } else if (savedBlog.bat_dong_sans && typeof savedBlog.bat_dong_sans === 'string') {
+    const found = batDongSanStore.batDongSans.find(bds => bds.documentId === savedBlog.bat_dong_sans)
+    savedBlog.bat_dong_sans = found ? [{ label: found.tieuDe, value: found.documentId }] : []
+  } else {
+    savedBlog.bat_dong_sans = []
+  }
+
+  blogEdit.value = savedBlog
   await blogStore.fetchDanhMucBaiViets()
-  await batDongSanStore.fetchBatCategories()
 })
+
 </script>
 
 <style scoped>
